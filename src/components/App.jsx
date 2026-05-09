@@ -200,7 +200,7 @@ function IntroScreen({ onStart, dark, onToggleDark }) {
           <span className="intro-btn-arrow">→</span>
         </button>
 
-        <p className="intro-credit intro-anim-5">criado por Paulo Henrique Dias</p>
+        <a href="/sobre" className="intro-credit intro-anim-5">criado por Paulo Henrique Dias</a>
       </div>
     </div>
   );
@@ -409,7 +409,7 @@ export default function App() {
             <div />
           )}
         </div>
-        <span className="nav-credit">criado por Paulo Henrique Dias</span>
+        <a href="/sobre" className="nav-credit">criado por Paulo Henrique Dias</a>
 
         <div className="nav-right">
           {step < STEPS.length - 1 && (
