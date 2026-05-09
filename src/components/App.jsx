@@ -309,8 +309,8 @@ export default function App() {
 
   const handlePresetSelect = (preset) => {
     setSelectedIds(preset.bookIds);
-    setConfig(c => ({ ...c, chaptersPerDay: preset.chaptersPerDay, planName: preset.label }));
-    goToStep(2);
+    setConfig(c => ({ ...c, planName: preset.label }));
+    goToStep(1);
   };
 
   const canNext = () => {
