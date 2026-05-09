@@ -93,6 +93,7 @@ const colX = (c) => ML + c * (CW + CGAP);
 function fi(doc, arr) { doc.setFillColor(...arr); }
 function dr(doc, arr) { doc.setDrawColor(...arr); }
 function tx(doc, arr) { doc.setTextColor(...arr); }
+function sa(str) { return str.normalize("NFD").replace(/[̀-ͯ]/g, ""); }
 
 // ─── Pré-cálculo de páginas ───────────────────────────────────
 function calcTotalPages(items) {
@@ -276,14 +277,15 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
   doc.text(wd, x + 18, vs);
 
   tx(doc, pal.drk);
-  doc.setFont("helvetica", "normal");
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(6.8);
-  const txt = formatReadings(day.readings);
+  const txt = sa(formatReadings(day.readings, { useAbbr: true }));
   const maxW = CW - 35;
   const lines = doc.splitTextToSize(txt, maxW);
   doc.text(lines[0] || "", x + 34, vc);
   if (lines.length > 1) {
     tx(doc, pal.mid);
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(5.8);
     doc.text(lines[1], x + 34, vs);
   }
@@ -293,7 +295,7 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
 export async function exportToPDF({ planName, days, chaptersPerDay, totalChapters, theme = "classico" }) {
   const { jsPDF } = await import("jspdf");
   const pal  = PDF_THEMES[theme] ?? PDF_THEMES.classico;
-  const name = planName || "Plano de Leitura Biblica";
+  const name = sa(planName || "Plano de Leitura Biblica");
 
   const items = [];
   for (let i = 0; i < days.length; i++) {

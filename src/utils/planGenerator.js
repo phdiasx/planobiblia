@@ -34,7 +34,7 @@ export function formatDate(date) {
   });
 }
 
-export function formatReadings(readings) {
+export function formatReadings(readings, { useAbbr = false } = {}) {
   if (!readings.length) return "";
 
   const groups = [];
@@ -52,6 +52,9 @@ export function formatReadings(readings) {
   groups.push(current);
 
   return groups
-    .map(g => g.start === g.end ? `${g.bookName} ${g.start}` : `${g.bookName} ${g.start}-${g.end}`)
+    .map(g => {
+      const label = useAbbr ? g.abbr : g.bookName;
+      return g.start === g.end ? `${label} ${g.start}` : `${label} ${g.start}-${g.end}`;
+    })
     .join("; ");
 }

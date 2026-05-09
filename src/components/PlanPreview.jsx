@@ -8,16 +8,23 @@ import { BOOKS } from "@/data/bible";
 const PAGE_SIZE = 60;
 const PIX_KEY = "planobiblia0@gmail.com";
 
-export default function PlanPreview({ days, config, selectedIds }) {
+export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [page, setPage] = useState(0);
   const [exporting, setExporting] = useState(false);
   const [theme, setTheme] = useState("classico");
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(PIX_KEY);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
+  };
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(shareUrl || window.location.href);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2500);
   };
 
   const totalPages = Math.ceil(days.length / PAGE_SIZE);
@@ -47,9 +54,14 @@ export default function PlanPreview({ days, config, selectedIds }) {
         <div className="preview-info">
           <strong>{days.length}</strong> dias de leitura &bull; <strong>{totalChapters}</strong> capítulos
         </div>
-        <button className="btn-primary export-btn" onClick={handleExport} disabled={exporting}>
-          {exporting ? "Gerando PDF..." : "Baixar PDF"}
-        </button>
+        <div className="toolbar-actions">
+          <button className="btn-outline share-btn" onClick={handleCopyLink}>
+            {linkCopied ? "✓ Link copiado!" : "🔗 Compartilhar"}
+          </button>
+          <button className="btn-primary export-btn" onClick={handleExport} disabled={exporting}>
+            {exporting ? "Gerando PDF..." : "Baixar PDF"}
+          </button>
+        </div>
       </div>
 
       <div className="pdf-theme-row">
@@ -83,7 +95,7 @@ export default function PlanPreview({ days, config, selectedIds }) {
           </div>
         </div>
         <div className="pix-body">
-          <img src="/qr-code-pix.jpeg" alt="QR Code PIX" className="pix-qr" />
+          <img src="/qr-code-pix.jpeg" alt="QR Code PIX" className="pix-qr" width="110" height="110" />
           <div className="pix-right">
             <p className="pix-scan-hint">Escaneie o QR Code ou copie a chave abaixo</p>
             <button className="pix-copy" onClick={handleCopy}>

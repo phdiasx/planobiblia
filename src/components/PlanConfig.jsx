@@ -20,14 +20,14 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
     ? Math.ceil(totalChapters / config.chaptersPerDay)
     : 0;
 
-  const endDate = () => {
+  const endDate = (() => {
     if (!config.startDate || totalDays === 0) return null;
     const d = new Date(config.startDate + "T00:00:00");
     d.setDate(d.getDate() + totalDays - 1);
     return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
-  };
+  })();
 
-  const months = totalDays > 0 ? (totalDays / 30).toFixed(1) : 0;
+  const months = totalDays > 0 ? `~${Math.round(totalDays / 30)}` : 0;
 
   return (
     <div className="plan-config">
@@ -94,13 +94,13 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
           <div className="summary-divider" />
           <div className="summary-item">
             <span className="summary-value">{months}</span>
-            <span className="summary-label">meses</span>
+            <span className="summary-label">{Math.round(totalDays / 30) === 1 ? "mês" : "meses"}</span>
           </div>
-          {endDate() && (
+          {endDate && (
             <>
               <div className="summary-divider" />
               <div className="summary-item">
-                <span className="summary-value">{endDate()}</span>
+                <span className="summary-value">{endDate}</span>
                 <span className="summary-label">conclusão</span>
               </div>
             </>

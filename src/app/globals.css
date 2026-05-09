@@ -61,6 +61,7 @@ body {
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ══ App Shell ══════════════════════════════════════════════ */
@@ -87,9 +88,9 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
-.header-inner { display: flex; align-items: center; gap: 8px; }
-.logo-icon { font-size: 18px; }
-.logo-text { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; }
+.header-inner { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
+.logo-icon { font-size: 18px; flex-shrink: 0; }
+.logo-text { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .header-actions { display: flex; align-items: center; gap: 8px; }
 
@@ -334,6 +335,56 @@ body {
 
 [data-theme="dark"] .config-field input[type="date"] { color-scheme: dark; }
 
+/* ══ Pré-sets de plano ══════════════════════════════════════ */
+.presets-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 4px;
+}
+
+.presets-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.presets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+}
+
+.preset-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.preset-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  transform: translateY(-2px);
+}
+.preset-card:active { transform: scale(0.98); }
+
+.preset-card-icon { font-size: 20px; }
+.preset-card-label { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.preset-card-meta  { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
+
 .presets-row { display: flex; flex-wrap: wrap; gap: 7px; }
 
 .preset-btn {
@@ -372,6 +423,8 @@ body {
 
 .preview-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
 .preview-info { font-size: 13px; color: var(--text-muted); }
+.toolbar-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.share-btn { font-size: 13px !important; padding: 8px 16px !important; border-radius: 99px !important; }
 
 .export-btn {
   background: var(--gold) !important; border-radius: 99px !important;
@@ -527,6 +580,13 @@ body {
   background: transparent; border-color: transparent;
 }
 
+/* ══ Small (< 480px) ════════════════════════════════════════ */
+@media (max-width: 480px) {
+  .pix-body { flex-direction: column; align-items: center; }
+  .pix-right { width: 100%; }
+  .nav-credit { display: none; }
+}
+
 /* ══ Tablet (≥ 600px) ═══════════════════════════════════════ */
 @media (min-width: 600px) {
   .app-main { padding: 28px 28px 8px; }
@@ -535,6 +595,10 @@ body {
   .col-date { display: block; color: var(--text-muted); font-size: 13px; }
   .books-grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); }
   .step-content { padding: 28px 24px; }
+  .intro-stats { padding: 16px 28px; }
+  .intro-stat { padding: 0 20px; }
+  .intro-stat-num { font-size: 28px; }
+  .presets-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }
 
 /* ══ Desktop (≥ 860px) ══════════════════════════════════════ */
@@ -714,19 +778,20 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 16px 28px;
+  padding: 12px 8px;
   box-shadow: var(--shadow-sm);
   width: fit-content;
+  max-width: 100%;
 }
 .intro-stat {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 0 20px;
+  padding: 0 10px;
 }
 .intro-stat-num {
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--accent);
   letter-spacing: -1px;

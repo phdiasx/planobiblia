@@ -5,10 +5,78 @@ import BookSelector from "@/components/BookSelector";
 import PlanConfig from "@/components/PlanConfig";
 import PlanPreview from "@/components/PlanPreview";
 import { generatePlan } from "@/utils/planGenerator";
-import { BOOKS, DEUTERO_IDS } from "@/data/bible";
+import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
 
 const today = new Date().toISOString().slice(0, 10);
 const STEPS = ["Livros", "Configurar", "Visualizar"];
+
+const PLAN_PRESETS = [
+  {
+    id: "biblia-completa",
+    icon: "📖",
+    label: "Bíblia Completa",
+    meta: "66 livros · 4 cap/dia · ~10 meses",
+    bookIds: [...AT_BOOKS, ...NT_BOOKS].map(b => b.id),
+    chaptersPerDay: 4,
+  },
+  {
+    id: "nt-3-meses",
+    icon: "✝️",
+    label: "Novo Testamento",
+    meta: "27 livros · 3 cap/dia · ~3 meses",
+    bookIds: NT_BOOKS.map(b => b.id),
+    chaptersPerDay: 3,
+  },
+  {
+    id: "at-1-ano",
+    icon: "📜",
+    label: "Antigo Testamento",
+    meta: "39 livros · 3 cap/dia · ~10 meses",
+    bookIds: AT_BOOKS.map(b => b.id),
+    chaptersPerDay: 3,
+  },
+  {
+    id: "salmos-30",
+    icon: "🎵",
+    label: "Salmos em 30 dias",
+    meta: "150 capítulos · 5 cap/dia",
+    bookIds: [19],
+    chaptersPerDay: 5,
+  },
+  {
+    id: "evangelhos",
+    icon: "🕊️",
+    label: "Evangelhos & Atos",
+    meta: "5 livros · 2 cap/dia · ~55 dias",
+    bookIds: [40, 41, 42, 43, 44],
+    chaptersPerDay: 2,
+  },
+  {
+    id: "proverbios-sabedoria",
+    icon: "💡",
+    label: "Sabedoria",
+    meta: "Jó · Salmos · Pv · Ec · Ct",
+    bookIds: [18, 19, 20, 21, 22],
+    chaptersPerDay: 3,
+  },
+];
+
+function PlanPresets({ onSelect }) {
+  return (
+    <div className="presets-section">
+      <p className="presets-label">Planos prontos — clique para usar</p>
+      <div className="presets-grid">
+        {PLAN_PRESETS.map(p => (
+          <button key={p.id} className="preset-card" onClick={() => onSelect(p)}>
+            <span className="preset-card-icon">{p.icon}</span>
+            <span className="preset-card-label">{p.label}</span>
+            <span className="preset-card-meta">{p.meta}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const FEATURES = [
   { icon: "📚", title: "66 ou 73 livros", desc: "Protestante ou Católica" },
@@ -28,6 +96,7 @@ function useCountUp(target, duration = 1200, delay = 0) {
         const eased = 1 - Math.pow(1 - progress, 3);
         setValue(Math.floor(eased * target));
         if (progress < 1) frame = requestAnimationFrame(step);
+        else setValue(target);
       };
       frame = requestAnimationFrame(step);
     }, delay);
@@ -89,8 +158,8 @@ function IntroScreen({ onStart, dark, onToggleDark }) {
           </div>
           <div className="intro-stat-divider" />
           <div className="intro-stat">
-            <span className="intro-stat-num">∞</span>
-            <span className="intro-stat-label">possibilidades</span>
+            <span className="intro-stat-num">100%</span>
+            <span className="intro-stat-label">gratuito</span>
           </div>
         </div>
 
@@ -165,6 +234,39 @@ export default function App() {
     localStorage.setItem("theme", theme);
   }, [dark]);
 
+  // Lê parâmetros da URL ao carregar — pula intro e vai direto ao plano
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const livros = params.get("livros");
+    if (!livros) return;
+    const ids = livros.split(",").map(Number).filter(Boolean);
+    if (ids.length === 0) return;
+    const edicao = params.get("edicao") || "protestante";
+    const ritmo = Number(params.get("ritmo")) || 3;
+    const inicio = params.get("inicio") || today;
+    const nome = params.get("nome") ? decodeURIComponent(params.get("nome")) : "";
+    setEdition(edicao);
+    setSelectedIds(ids);
+    setConfig({ planName: nome, chaptersPerDay: ritmo, startDate: inicio });
+    setShowIntro(false);
+    setStep(2);
+  }, []);
+
+  // Atualiza a URL quando chega no passo 3
+  useEffect(() => {
+    if (step === 2 && selectedIds.length > 0) {
+      const params = new URLSearchParams();
+      params.set("livros", selectedIds.join(","));
+      params.set("ritmo", config.chaptersPerDay);
+      params.set("inicio", config.startDate);
+      if (config.planName) params.set("nome", encodeURIComponent(config.planName));
+      if (edition === "catolica") params.set("edicao", "catolica");
+      window.history.replaceState(null, "", `?${params.toString()}`);
+    } else if (step < 2) {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, [step, selectedIds, config, edition]);
+
   const selectedBooks = useMemo(
     () => BOOKS.filter(b => selectedIds.includes(b.id)),
     [selectedIds]
@@ -178,6 +280,12 @@ export default function App() {
       startDate: config.startDate,
     });
   }, [selectedBooks, config.chaptersPerDay, config.startDate]);
+
+  const handlePresetSelect = (preset) => {
+    setSelectedIds(preset.bookIds);
+    setConfig(c => ({ ...c, chaptersPerDay: preset.chaptersPerDay, planName: preset.label }));
+    setStep(2);
+  };
 
   const canNext = () => {
     if (step === 0) return selectedIds.length > 0;
@@ -239,7 +347,8 @@ export default function App() {
           {step === 0 && (
             <>
               <h2>Selecione os livros</h2>
-              <p className="step-hint">Escolha quais livros farão parte do seu plano.</p>
+              <p className="step-hint">Escolha um plano pronto ou monte o seu abaixo.</p>
+              <PlanPresets onSelect={handlePresetSelect} />
               <BookSelector
                 selectedIds={selectedIds}
                 onChange={setSelectedIds}
@@ -259,7 +368,7 @@ export default function App() {
             <>
               <h2>{config.planName || "Meu Plano de Leitura"}</h2>
               <p className="step-hint">Confira o plano e baixe o PDF para impressão.</p>
-              <PlanPreview days={days} config={config} selectedIds={selectedIds} />
+              <PlanPreview days={days} config={config} selectedIds={selectedIds} shareUrl={typeof window !== "undefined" ? window.location.href : ""} />
             </>
           )}
         </div>

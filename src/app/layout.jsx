@@ -1,24 +1,35 @@
 import "./globals.css";
 
 export const metadata = {
+  metadataBase: new URL("https://planobiblia.pages.dev"),
   title: "Plano Bíblico — Crie seu plano de leitura personalizado",
   description:
     "Crie um plano de leitura bíblica personalizado: escolha os livros, defina o ritmo diário e gere um PDF para impressão. Gratuito e funciona offline.",
   keywords:
-    "plano de leitura bíblica, plano bíblico, ler a bíblia, bíblia em 1 ano, leitura bíblica diária",
+    "plano de leitura bíblica, plano bíblico, ler a bíblia, bíblia em 1 ano, leitura bíblica diária, bíblia completa, bíblia católica, bíblia protestante",
+  authors: [{ name: "Paulo Henrique Dias" }],
+  creator: "Paulo Henrique Dias",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   openGraph: {
-    title: "Plano Bíblico",
-    description: "Crie seu plano de leitura bíblica personalizado e gere um PDF para impressão.",
+    title: "Plano Bíblico — Crie seu plano de leitura personalizado",
+    description: "Crie um plano de leitura bíblica personalizado: escolha os livros, defina o ritmo diário e gere um PDF para impressão. Gratuito.",
+    url: "https://planobiblia.pages.dev",
     locale: "pt_BR",
     type: "website",
     siteName: "Plano Bíblico",
   },
   twitter: {
-    card: "summary",
-    title: "Plano Bíblico",
-    description: "Crie seu plano de leitura bíblica personalizado.",
+    card: "summary_large_image",
+    title: "Plano Bíblico — Crie seu plano de leitura personalizado",
+    description: "Crie um plano de leitura bíblica personalizado e gere um PDF para impressão. Gratuito.",
   },
-  metadataBase: new URL("https://planobiblia.com.br"),
+  alternates: {
+    canonical: "https://planobiblia.pages.dev",
+  },
 };
 
 export default function RootLayout({ children }) {
