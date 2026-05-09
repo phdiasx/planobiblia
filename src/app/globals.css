@@ -1,5 +1,6 @@
 /* ══ Reset + Variáveis ══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+.icon { width: 1em; height: 1em; display: inline-block; vertical-align: middle; flex-shrink: 0; }
 
 :root {
   /* Light mode — creme + azul-marinho + dourado */
@@ -89,7 +90,7 @@ body {
 }
 
 .header-inner { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; overflow: hidden; }
-.logo-icon { font-size: 18px; flex-shrink: 0; }
+.logo-icon { font-size: 20px; flex-shrink: 0; color: var(--accent); }
 .logo-text { font-size: 15px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .header-actions { display: flex; align-items: center; gap: 8px; }
@@ -381,7 +382,7 @@ body {
 }
 .preset-card:active { transform: scale(0.98); }
 
-.preset-card-icon { font-size: 20px; }
+.preset-card-icon { font-size: 22px; color: var(--accent); display: flex; }
 .preset-card-label { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
 .preset-card-meta  { font-size: 11px; color: var(--text-muted); line-height: 1.3; }
 
@@ -738,6 +739,7 @@ body {
   box-shadow: 0 12px 40px rgba(27,75,130,0.3);
   animation: intro-float 4s ease-in-out 0.8s infinite;
 }
+.intro-logo-icon { color: #fff; font-size: 48px; stroke-width: 1.4; }
 .intro-logo-ring {
   position: absolute;
   inset: -8px;
@@ -838,7 +840,7 @@ body {
   box-shadow: var(--shadow);
   border-color: var(--accent-muted);
 }
-.intro-feature-icon { font-size: 22px; flex-shrink: 0; }
+.intro-feature-icon { font-size: 22px; flex-shrink: 0; color: var(--accent); display: flex; }
 .intro-feature-title {
   font-size: 13px;
   font-weight: 700;

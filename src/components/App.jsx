@@ -6,6 +6,10 @@ import PlanConfig from "@/components/PlanConfig";
 import PlanPreview from "@/components/PlanPreview";
 import { generatePlan } from "@/utils/planGenerator";
 import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
+import {
+  IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
+  IconLibrary, IconSliders, IconFilePdf,
+} from "@/components/Icons";
 
 const today = new Date().toISOString().slice(0, 10);
 const STEPS = ["Livros", "Configurar", "Visualizar"];
@@ -13,7 +17,7 @@ const STEPS = ["Livros", "Configurar", "Visualizar"];
 const PLAN_PRESETS = [
   {
     id: "biblia-completa",
-    icon: "📖",
+    icon: <IconBook />,
     label: "Bíblia Completa",
     meta: "66 livros · 4 cap/dia · ~10 meses",
     bookIds: [...AT_BOOKS, ...NT_BOOKS].map(b => b.id),
@@ -21,7 +25,7 @@ const PLAN_PRESETS = [
   },
   {
     id: "nt-3-meses",
-    icon: "✝️",
+    icon: <IconCross />,
     label: "Novo Testamento",
     meta: "27 livros · 3 cap/dia · ~3 meses",
     bookIds: NT_BOOKS.map(b => b.id),
@@ -29,7 +33,7 @@ const PLAN_PRESETS = [
   },
   {
     id: "at-1-ano",
-    icon: "📜",
+    icon: <IconScroll />,
     label: "Antigo Testamento",
     meta: "39 livros · 3 cap/dia · ~10 meses",
     bookIds: AT_BOOKS.map(b => b.id),
@@ -37,7 +41,7 @@ const PLAN_PRESETS = [
   },
   {
     id: "salmos-30",
-    icon: "🎵",
+    icon: <IconNote />,
     label: "Salmos em 30 dias",
     meta: "150 capítulos · 5 cap/dia",
     bookIds: [19],
@@ -45,7 +49,7 @@ const PLAN_PRESETS = [
   },
   {
     id: "evangelhos",
-    icon: "🕊️",
+    icon: <IconFish />,
     label: "Evangelhos & Atos",
     meta: "5 livros · 2 cap/dia · ~55 dias",
     bookIds: [40, 41, 42, 43, 44],
@@ -53,7 +57,7 @@ const PLAN_PRESETS = [
   },
   {
     id: "proverbios-sabedoria",
-    icon: "💡",
+    icon: <IconCandle />,
     label: "Sabedoria",
     meta: "Jó · Salmos · Pv · Ec · Ct",
     bookIds: [18, 19, 20, 21, 22],
@@ -79,9 +83,9 @@ function PlanPresets({ onSelect }) {
 }
 
 const FEATURES = [
-  { icon: "📚", title: "66 ou 73 livros", desc: "Protestante ou Católica" },
-  { icon: "🎯", title: "Seu ritmo", desc: "De 1 a 10+ caps/dia" },
-  { icon: "📄", title: "PDF bonito", desc: "4 modelos para imprimir" },
+  { icon: <IconLibrary />, title: "66 ou 73 livros", desc: "Protestante ou Católica" },
+  { icon: <IconSliders />, title: "Seu ritmo", desc: "De 1 a 10+ caps/dia" },
+  { icon: <IconFilePdf />, title: "PDF bonito", desc: "4 modelos para imprimir" },
 ];
 
 function useCountUp(target, duration = 1200, delay = 0) {
@@ -134,7 +138,7 @@ function IntroScreen({ onStart, dark, onToggleDark }) {
 
       <div className="intro-content">
         <div className="intro-logo-wrap intro-anim-0">
-          <span className="intro-logo-icon">📖</span>
+          <IconBook className="intro-logo-icon" />
           <div className="intro-logo-ring" />
         </div>
 
@@ -307,7 +311,7 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="header-inner">
-          <span className="logo-icon">📖</span>
+          <IconBook className="logo-icon" />
           <span className="logo-text">Plano de Leitura Bíblica</span>
         </div>
         <div className="header-actions">
