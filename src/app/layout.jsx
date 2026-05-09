@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 
 const BASE_URL = "https://planobiblia.com.br";
 
@@ -90,8 +91,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" />
-        <script dangerouslySetInnerHTML={{ __html: `
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
