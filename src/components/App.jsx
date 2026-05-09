@@ -309,7 +309,7 @@ export default function App() {
       startDate: config.startDate,
       dayOverrides: config.dayOverrides || {},
     });
-  }, [selectedBooks, config.chaptersPerDay, config.startDate]);
+  }, [selectedBooks, config.chaptersPerDay, config.startDate, config.dayOverrides]);
 
   const goToStep = (next) => {
     setStepDir(next > step ? 1 : -1);
