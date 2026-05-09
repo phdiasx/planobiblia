@@ -101,7 +101,7 @@ function PlanPresets({ onSelect, edition, onEditionChange }) {
 const FEATURES = [
   { icon: <IconLibrary />, title: "66 ou 73 livros", desc: "Protestante ou Católica" },
   { icon: <IconSliders />, title: "Seu ritmo", desc: "De 1 a 10+ caps/dia" },
-  { icon: <IconFilePdf />, title: "PDF bonito", desc: "4 modelos para imprimir" },
+  { icon: <IconFilePdf />, title: "Pronto para imprimir", desc: "4 modelos de PDF" },
 ];
 
 function useCountUp(target, duration = 1200, delay = 0) {
