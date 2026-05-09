@@ -10,6 +10,7 @@ import {
   IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
   IconLibrary, IconSliders, IconFilePdf,
 } from "@/components/Icons";
+import { DEUTERO_BOOKS } from "@/data/bible";
 
 const today = new Date().toISOString().slice(0, 10);
 const STEPS = ["Livros", "Configurar", "Visualizar"];
@@ -19,15 +20,17 @@ const PLAN_PRESETS = [
     id: "biblia-completa",
     icon: <IconBook />,
     label: "Bíblia Completa",
-    meta: "66 livros · 4 cap/dia · ~10 meses",
+    meta: "66 livros · ~10 meses",
+    metaCatolica: "73 livros · ~10 meses",
     bookIds: [...AT_BOOKS, ...NT_BOOKS].map(b => b.id),
+    bookIdsCatolica: [...AT_BOOKS, ...DEUTERO_BOOKS, ...NT_BOOKS].map(b => b.id),
     chaptersPerDay: 4,
   },
   {
     id: "nt-3-meses",
     icon: <IconCross />,
     label: "Novo Testamento",
-    meta: "27 livros · 3 cap/dia · ~3 meses",
+    meta: "27 livros · ~3 meses",
     bookIds: NT_BOOKS.map(b => b.id),
     chaptersPerDay: 3,
   },
@@ -35,8 +38,10 @@ const PLAN_PRESETS = [
     id: "at-1-ano",
     icon: <IconScroll />,
     label: "Antigo Testamento",
-    meta: "39 livros · 3 cap/dia · ~10 meses",
+    meta: "39 livros · ~10 meses",
+    metaCatolica: "46 livros · ~10 meses",
     bookIds: AT_BOOKS.map(b => b.id),
+    bookIdsCatolica: [...AT_BOOKS, ...DEUTERO_BOOKS].map(b => b.id),
     chaptersPerDay: 3,
   },
   {
@@ -87,10 +92,12 @@ function PlanPresets({ onSelect, edition, onEditionChange }) {
       </div>
       <div className="presets-grid">
         {PLAN_PRESETS.map(p => (
-          <button key={p.id} className="preset-card" onClick={() => onSelect(p)}>
+          <button key={p.id} className="preset-card" onClick={() => onSelect(p, edition)}>
             <span className="preset-card-icon">{p.icon}</span>
             <span className="preset-card-label">{p.label}</span>
-            <span className="preset-card-meta">{p.meta}</span>
+            <span className="preset-card-meta">
+              {edition === "catolica" && p.metaCatolica ? p.metaCatolica : p.meta}
+            </span>
           </button>
         ))}
       </div>
@@ -307,8 +314,11 @@ export default function App() {
     setStep(next);
   };
 
-  const handlePresetSelect = (preset) => {
-    setSelectedIds(preset.bookIds);
+  const handlePresetSelect = (preset, ed) => {
+    const ids = ed === "catolica" && preset.bookIdsCatolica
+      ? preset.bookIdsCatolica
+      : preset.bookIds;
+    setSelectedIds(ids);
     setConfig(c => ({ ...c, planName: preset.label }));
     goToStep(1);
   };
