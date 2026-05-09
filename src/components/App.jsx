@@ -10,7 +10,7 @@ const PlanPreview = dynamic(() => import("@/components/PlanPreview"), { ssr: fal
 import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
 import {
   IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
-  IconLibrary, IconSliders, IconFilePdf, IconSpeech,
+  IconLibrary, IconSliders, IconFilePdf, IconSpeech, IconArrow, IconClock,
 } from "@/components/Icons";
 import { DEUTERO_BOOKS } from "@/data/bible";
 
@@ -77,6 +77,26 @@ const PLAN_PRESETS = [
     meta: "Mateus · Marcos · Lucas · ~5 semanas",
     bookIds: [40, 41, 42],
     chaptersPerDay: 2,
+  },
+  {
+    id: "nt-depois-at",
+    icon: <IconArrow />,
+    label: "NT → Antigo Testamento",
+    meta: "NT primeiro · 66 livros · ~1 ano",
+    metaCatolica: "NT primeiro · 73 livros · ~1 ano",
+    bookIds: [40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39],
+    bookIdsCatolica: [40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,67,68,69,70,71,72,73],
+    chaptersPerDay: 3,
+  },
+  {
+    id: "cronologica",
+    icon: <IconClock />,
+    label: "Leitura Cronológica",
+    meta: "66 livros em ordem histórica · ~1 ano",
+    metaCatolica: "73 livros em ordem histórica · ~1 ano",
+    bookIds: [1,2,3,4,5,6,7,8,9,10,13,11,12,14,15,16,17,18,32,20,19,21,22,28,29,30,33,35,36,31,34,37,38,39,23,24,25,26,27,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],
+    bookIdsCatolica: [1,2,3,4,5,6,7,8,9,10,13,11,12,14,15,16,17,18,32,20,19,21,22,28,29,30,33,35,36,31,34,37,38,39,71,72,23,24,25,26,27,73,67,68,69,70,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],
+    chaptersPerDay: 3,
   },
 ];
 
@@ -307,7 +327,7 @@ export default function App() {
   }, [step, selectedIds, config, edition]);
 
   const selectedBooks = useMemo(
-    () => BOOKS.filter(b => selectedIds.includes(b.id)),
+    () => selectedIds.map(id => BOOKS.find(b => b.id === id)).filter(Boolean),
     [selectedIds]
   );
 

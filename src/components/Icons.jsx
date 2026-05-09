@@ -63,6 +63,16 @@ export const IconSpeech = ({ className = "" }) => s(<>
   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
 </>, className);
 
+export const IconArrow = ({ className = "" }) => s(<>
+  <line x1="5" y1="12" x2="19" y2="12"/>
+  <polyline points="12 5 19 12 12 19"/>
+</>, className);
+
+export const IconClock = ({ className = "" }) => s(<>
+  <circle cx="12" cy="12" r="10"/>
+  <polyline points="12 6 12 12 16 14"/>
+</>, className);
+
 export const IconFilePdf = ({ className = "" }) => s(<>
   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" />
   <polyline points="14,2 14,8 20,8" />
