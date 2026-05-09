@@ -1,5 +1,4 @@
 import "./globals.css";
-import Script from "next/script";
 
 const BASE_URL = "https://planobiblia.com.br";
 
@@ -105,17 +104,15 @@ export default function RootLayout({ children }) {
             document.documentElement.setAttribute('data-theme', t);
           } catch(e) {}
         `}} />
-      </head>
-      <body>
-        {children}
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" />
+        <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
           gtag('config', 'G-J0FQGYN4F6');
         `}} />
-      </body>
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
