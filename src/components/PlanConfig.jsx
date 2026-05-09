@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { BOOKS } from "@/data/bible";
 
 const PRESETS = [
@@ -12,13 +13,55 @@ const PRESETS = [
   { label: "10 cap/dia", value: 10 },
 ];
 
+const DAYS = [
+  { key: 0, label: "Dom" },
+  { key: 1, label: "Seg" },
+  { key: 2, label: "Ter" },
+  { key: 3, label: "Qua" },
+  { key: 4, label: "Qui" },
+  { key: 5, label: "Sex" },
+  { key: 6, label: "Sáb" },
+];
+
 export default function PlanConfig({ config, onChange, selectedIds }) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   const totalChapters = BOOKS.filter(b => selectedIds.includes(b.id))
     .reduce((s, b) => s + b.chapters, 0);
 
-  const totalDays = config.chaptersPerDay > 0
-    ? Math.ceil(totalChapters / config.chaptersPerDay)
-    : 0;
+  const overrides = config.dayOverrides || {};
+
+  const toggleDay = (key) => {
+    if (overrides[key] !== undefined) {
+      const next = { ...overrides };
+      delete next[key];
+      onChange({ ...config, dayOverrides: next });
+    } else {
+      onChange({ ...config, dayOverrides: { ...overrides, [key]: config.chaptersPerDay } });
+    }
+  };
+
+  const setDayOverride = (key, value) => {
+    onChange({ ...config, dayOverrides: { ...overrides, [key]: Math.max(1, value) } });
+  };
+
+  const hasOverrides = Object.keys(overrides).length > 0;
+
+  const totalDays = (() => {
+    if (!config.startDate || totalChapters === 0) return 0;
+    const start = new Date(config.startDate + "T00:00:00");
+    let remaining = totalChapters;
+    let dayIndex = 0;
+    while (remaining > 0) {
+      const date = new Date(start);
+      date.setDate(start.getDate() + dayIndex);
+      const dow = date.getDay();
+      const caps = overrides[dow] !== undefined ? overrides[dow] : config.chaptersPerDay;
+      remaining -= caps;
+      dayIndex++;
+    }
+    return dayIndex;
+  })();
 
   const endDate = (() => {
     if (!config.startDate || totalDays === 0) return null;
@@ -78,6 +121,62 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
           value={config.startDate}
           onChange={e => onChange({ ...config, startDate: e.target.value })}
         />
+      </div>
+
+      <div className="advanced-section">
+        <button
+          className={`advanced-toggle ${showAdvanced ? "open" : ""} ${hasOverrides ? "has-overrides" : ""}`}
+          onClick={() => setShowAdvanced(v => !v)}
+        >
+          <span>Personalização avançada</span>
+          <span className="advanced-toggle-meta">
+            {hasOverrides && !showAdvanced && `${Object.keys(overrides).length} dia${Object.keys(overrides).length > 1 ? "s" : ""} personalizado${Object.keys(overrides).length > 1 ? "s" : ""}`}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="advanced-chevron">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
+        </button>
+
+        {showAdvanced && (
+          <div className="advanced-body">
+            <p className="advanced-hint">
+              Clique em um dia para definir um ritmo diferente. Os demais usam o padrão de <strong>{config.chaptersPerDay} cap/dia</strong>.
+            </p>
+            <div className="day-overrides-grid">
+              {DAYS.map(d => {
+                const isActive = overrides[d.key] !== undefined;
+                return (
+                  <div key={d.key} className={`day-override-card ${isActive ? "active" : ""}`}>
+                    <button className="day-label" onClick={() => toggleDay(d.key)}>
+                      {d.label}
+                    </button>
+                    {isActive ? (
+                      <input
+                        type="number"
+                        min={1}
+                        max={50}
+                        value={overrides[d.key]}
+                        onChange={e => setDayOverride(d.key, Number(e.target.value))}
+                        className="day-input"
+                        onClick={e => e.stopPropagation()}
+                      />
+                    ) : (
+                      <span className="day-default">{config.chaptersPerDay}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+            {hasOverrides && (
+              <button
+                className="advanced-clear"
+                onClick={() => onChange({ ...config, dayOverrides: {} })}
+              >
+                Remover personalizações
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {totalChapters > 0 && config.chaptersPerDay > 0 && (

@@ -1,4 +1,4 @@
-export function generatePlan({ selectedBooks, chaptersPerDay, startDate }) {
+export function generatePlan({ selectedBooks, chaptersPerDay, startDate, dayOverrides = {} }) {
   const allChapters = [];
   for (const book of selectedBooks) {
     for (let ch = 1; ch <= book.chapters; ch++) {
@@ -15,10 +15,13 @@ export function generatePlan({ selectedBooks, chaptersPerDay, startDate }) {
     const date = new Date(start);
     date.setDate(start.getDate() + dayIndex);
 
-    const readings = allChapters.slice(i, i + chaptersPerDay);
-    days.push({ date, dayNumber: dayIndex + 1, readings });
+    const dow = date.getDay();
+    const caps = dayOverrides[dow] !== undefined ? dayOverrides[dow] : chaptersPerDay;
 
-    i += chaptersPerDay;
+    const readings = allChapters.slice(i, i + caps);
+    days.push({ date, dayNumber: days.length + 1, readings });
+
+    i += caps;
     dayIndex++;
   }
 

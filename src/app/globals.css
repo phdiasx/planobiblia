@@ -637,6 +637,129 @@ body {
   .nav-credit { display: none; }
 }
 
+/* ══ Personalização avançada ════════════════════════════════ */
+.advanced-section {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.advanced-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
+}
+.advanced-toggle:hover { background: var(--accent-bg); color: var(--accent); }
+.advanced-toggle.open { color: var(--accent); background: var(--accent-bg); }
+.advanced-toggle.has-overrides { color: var(--accent); }
+
+.advanced-toggle-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-light);
+}
+.advanced-toggle.has-overrides .advanced-toggle-meta { color: var(--accent); opacity: 0.7; }
+
+.advanced-chevron {
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.advanced-toggle.open .advanced-chevron { transform: rotate(180deg); }
+
+.advanced-body {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+}
+
+.advanced-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.day-overrides-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.day-override-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-label {
+  width: 100%;
+  padding: 7px 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+.day-label:hover { border-color: var(--accent-muted); color: var(--accent); background: var(--accent-bg); }
+.day-override-card.active .day-label {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.day-default {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+
+.day-input {
+  width: 100%;
+  padding: 4px;
+  border: 1.5px solid var(--accent);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-bg);
+  text-align: center;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.advanced-clear {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-light);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  align-self: flex-start;
+  transition: color 0.15s;
+}
+.advanced-clear:hover { color: var(--danger); }
+
 /* ══ Tablet (≥ 600px) ═══════════════════════════════════════ */
 @media (min-width: 600px) {
   .app-main { padding: 28px 28px 8px; }

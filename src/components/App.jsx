@@ -239,6 +239,7 @@ export default function App() {
     planName: "",
     chaptersPerDay: 3,
     startDate: today,
+    dayOverrides: {},
   });
   const [dark, setDark] = useState(false);
   const [edition, setEdition] = useState("protestante");
@@ -306,6 +307,7 @@ export default function App() {
       selectedBooks,
       chaptersPerDay: config.chaptersPerDay,
       startDate: config.startDate,
+      dayOverrides: config.dayOverrides || {},
     });
   }, [selectedBooks, config.chaptersPerDay, config.startDate]);
 
