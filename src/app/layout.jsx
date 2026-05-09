@@ -2,10 +2,6 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL("https://planobiblia.pages.dev"),
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
   title: "Plano Bíblico — Crie seu plano de leitura personalizado",
   description:
     "Crie um plano de leitura bíblica personalizado: escolha os livros, defina o ritmo diário e gere um PDF para impressão. Gratuito e funciona offline.",
@@ -40,6 +36,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#C49A1C" />
         {/* Evita flash de tema errado antes da hidratação */}
