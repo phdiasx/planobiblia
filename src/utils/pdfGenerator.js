@@ -126,7 +126,7 @@ function drawPageHeader(doc, name, pageNum, totalPages, pal) {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
   tx(doc, pal.hdrSub);
-  doc.text("Plano de Leitura Biblica", ML + 5, 16);
+  doc.text("Plano de Leitura Bíblica", ML + 5, 16);
 
   tx(doc, WHT);
   doc.setFont("helvetica", "bold");
@@ -136,7 +136,7 @@ function drawPageHeader(doc, name, pageNum, totalPages, pal) {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
   tx(doc, pal.hdrSub);
-  doc.text("pagina", PW - MR, 17, { align: "right" });
+  doc.text("página", PW - MR, 17, { align: "right" });
 }
 
 // ─── Barra de estatísticas (1ª página) ───────────────────────
@@ -153,11 +153,11 @@ function drawStatsBar(doc, days, chapPerDay, totalCap, pal) {
   }) ?? "";
 
   const stats = [
-    { v: fmt(days[0]?.date),               l: "INICIO"    },
-    { v: fmt(days[days.length - 1]?.date), l: "TERMINO"   },
+    { v: fmt(days[0]?.date),               l: "INÍCIO"    },
+    { v: fmt(days[days.length - 1]?.date), l: "TÉRMINO"   },
     { v: String(days.length),              l: "DIAS"      },
     { v: `${chapPerDay}x`,                l: "CAP./DIA"  },
-    { v: String(totalCap),               l: "CAPITULOS" },
+    { v: String(totalCap),               l: "CAPÍTULOS" },
   ];
 
   const sw = PW / stats.length;
@@ -217,7 +217,7 @@ function drawFooter(doc, name, fromDay, toDay, totalDays, pal) {
   tx(doc, pal.lit);
   doc.text(name, ML, y + 6);
   doc.text(`Dias ${fromDay}–${toDay} de ${totalDays}`, PW / 2, y + 6, { align: "center" });
-  doc.text("gerado por Plano Biblico", PW - MR, y + 6, { align: "right" });
+  doc.text("gerado por Plano Bíblico", PW - MR, y + 6, { align: "right" });
 }
 
 // ─── Separador de semana ──────────────────────────────────────
@@ -273,13 +273,13 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
 
   tx(doc, pal.lit);
   doc.setFontSize(5.5);
-  const wd = sa(day.date.toLocaleDateString("pt-BR", { weekday: "short" })).replace(".", "").slice(0, 3);
+  const wd = day.date.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "").slice(0, 3);
   doc.text(wd, x + 18, vs);
 
   tx(doc, pal.drk);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.8);
-  const txt = sa(formatReadings(day.readings, { useAbbr: true }));
+  const txt = formatReadings(day.readings, { useAbbr: true });
   const maxW = CW - 35;
   const lines = doc.splitTextToSize(txt, maxW);
   doc.text(lines[0] || "", x + 34, vc);
@@ -294,8 +294,9 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
 // ─── Exportar ─────────────────────────────────────────────────
 export async function exportToPDF({ planName, days, chaptersPerDay, totalChapters, theme = "classico" }) {
   const { jsPDF } = await import("jspdf");
-  const pal  = PDF_THEMES[theme] ?? PDF_THEMES.classico;
-  const name = sa(planName || "Plano de Leitura Biblica");
+  const pal      = PDF_THEMES[theme] ?? PDF_THEMES.classico;
+  const name     = planName || "Plano de Leitura Bíblica";
+  const nameSafe = sa(name);
 
   const items = [];
   for (let i = 0; i < days.length; i++) {
@@ -367,5 +368,5 @@ export async function exportToPDF({ planName, days, chaptersPerDay, totalChapter
   }
 
   endPage();
-  doc.save(`${name.replace(/\s+/g, "-").toLowerCase()}.pdf`);
+  doc.save(`${nameSafe.replace(/\s+/g, "-").toLowerCase()}.pdf`);
 }

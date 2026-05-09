@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="7" fill="#1B4B82"/>
+  <rect x="0" y="27" width="32" height="5" rx="0" fill="#C49A1C" opacity="0.9"/>
+  <rect x="0" y="27" width="32" height="5" rx="7" fill="#C49A1C" opacity="0.9"/>
+  <!-- Livro esquerdo -->
+  <path d="M5 11c0-1.1.8-2 2-2h6a2 2 0 0 1 2 2v11H7a2 2 0 0 1-2-2V11Z"
+        fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Livro direito -->
+  <path d="M15 11c0-1.1.8-2 2-2h5a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-7V11Z"
+        fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- Lombada central -->
+  <line x1="15" y1="22" x2="15" y2="15" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

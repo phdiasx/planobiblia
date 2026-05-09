@@ -10,7 +10,7 @@ const PlanPreview = dynamic(() => import("@/components/PlanPreview"), { ssr: fal
 import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
 import {
   IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
-  IconLibrary, IconSliders, IconFilePdf,
+  IconLibrary, IconSliders, IconFilePdf, IconSpeech,
 } from "@/components/Icons";
 import { DEUTERO_BOOKS } from "@/data/bible";
 
@@ -69,6 +69,14 @@ const PLAN_PRESETS = [
     meta: "Jó · Salmos · Pv · Ec · Ct",
     bookIds: [18, 19, 20, 21, 22],
     chaptersPerDay: 3,
+  },
+  {
+    id: "parabolas",
+    icon: <IconSpeech />,
+    label: "Parábolas de Jesus",
+    meta: "Mateus · Marcos · Lucas · ~5 semanas",
+    bookIds: [40, 41, 42],
+    chaptersPerDay: 2,
   },
 ];
 

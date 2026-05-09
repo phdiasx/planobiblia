@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://planobiblia.pages.dev/sitemap.xml
