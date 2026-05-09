@@ -8,9 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "jspdf": "^2.5.2",
     "next": "^15.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "jspdf": "^2.5.2"
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }

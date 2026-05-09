@@ -1,8 +1,15 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Sobre — Plano Bíblico",
-  description: "Conheça a história por trás do Plano Bíblico e a motivação de Paulo Henrique Dias para criá-lo.",
+  title: "Sobre o Plano Bíblico",
+  description: "Conheça a história por trás do Plano Bíblico: uma ferramenta gratuita para criar planos de leitura bíblica personalizados com exportação em PDF.",
+  alternates: { canonical: "https://planobiblia.com.br/sobre" },
+  openGraph: {
+    title: "Sobre o Plano Bíblico",
+    description: "Conheça a história por trás do Plano Bíblico: uma ferramenta gratuita para criar planos de leitura bíblica personalizados com exportação em PDF.",
+    url: "https://planobiblia.com.br/sobre",
+    type: "website",
+  },
 };
 
 export default function SobrePage() {
