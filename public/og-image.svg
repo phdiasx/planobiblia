@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1B3A6B"/>
+      <stop offset="100%" style="stop-color:#1B4B82"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.08"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0.03"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="980" cy="120" r="200" fill="#C49A1C" opacity="0.06"/>
+  <circle cx="1050" cy="500" r="150" fill="#C49A1C" opacity="0.04"/>
+  <circle cx="150" cy="520" r="180" fill="#ffffff" opacity="0.03"/>
+
+  <!-- Gold accent bar left -->
+  <rect x="0" y="0" width="8" height="630" fill="#C49A1C"/>
+
+  <!-- Gold bottom bar -->
+  <rect x="0" y="600" width="1200" height="30" fill="#C49A1C" opacity="0.15"/>
+
+  <!-- Book icon -->
+  <g transform="translate(100, 170)" stroke="white" stroke-width="4" stroke-linejoin="round" fill="none">
+    <path d="M0 18C0-3.3 9-6 18-6h54a6 6 0 0 1 6 6v78H6a6 6 0 0 1-6-6V18Z" stroke-width="5"/>
+    <path d="M78 18C78-3.3 87-6 96-6h30a6 6 0 0 1 6 6v54a6 6 0 0 1-6 6H78V18Z" stroke-width="5"/>
+    <line x1="78" y1="72" x2="78" y2="36" stroke-width="5"/>
+  </g>
+
+  <!-- Main title -->
+  <text x="100" y="340" font-family="Georgia, serif" font-size="80" font-weight="bold" fill="white" letter-spacing="-1">Plano Bíblico</text>
+
+  <!-- Subtitle -->
+  <text x="100" y="410" font-family="-apple-system, Arial, sans-serif" font-size="34" fill="#B8D0E8" letter-spacing="0.5">Crie seu plano de leitura personalizado</text>
+
+  <!-- Divider line -->
+  <rect x="100" y="440" width="120" height="4" rx="2" fill="#C49A1C"/>
+
+  <!-- Feature pills -->
+  <g transform="translate(100, 480)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="190" height="44" rx="22" fill="url(#card)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="95" y="28" font-family="-apple-system, Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">66 ou 73 livros</text>
+
+    <!-- Pill 2 -->
+    <rect x="210" y="0" width="180" height="44" rx="22" fill="url(#card)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="300" y="28" font-family="-apple-system, Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">Seu ritmo</text>
+
+    <!-- Pill 3 -->
+    <rect x="410" y="0" width="230" height="44" rx="22" fill="url(#card)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <text x="525" y="28" font-family="-apple-system, Arial, sans-serif" font-size="20" fill="white" text-anchor="middle">PDF para impressão</text>
+
+    <!-- Pill 4 -->
+    <rect x="660" y="0" width="140" height="44" rx="22" fill="#C49A1C" opacity="0.9"/>
+    <text x="730" y="28" font-family="-apple-system, Arial, sans-serif" font-size="20" fill="white" text-anchor="middle" font-weight="bold">Gratuito</text>
+  </g>
+
+  <!-- URL -->
+  <text x="100" y="580" font-family="-apple-system, Arial, sans-serif" font-size="24" fill="#C49A1C" opacity="0.9">planobiblia.com.br</text>
+</svg>

@@ -17,15 +17,17 @@ export const metadata = {
   openGraph: {
     title: "Plano Bíblico — Crie seu plano de leitura personalizado",
     description: "Crie um plano de leitura bíblica personalizado: escolha os livros, defina o ritmo diário e gere um PDF para impressão. Gratuito.",
-    url: "https://planobiblia.pages.dev",
+    url: "https://planobiblia.com.br",
     locale: "pt_BR",
     type: "website",
     siteName: "Plano Bíblico",
+    images: [{ url: "https://planobiblia.com.br/og-image.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Plano Bíblico — Crie seu plano de leitura personalizado",
     description: "Crie um plano de leitura bíblica personalizado e gere um PDF para impressão. Gratuito.",
+    images: ["https://planobiblia.com.br/og-image.jpg"],
   },
   alternates: {
     canonical: "https://planobiblia.pages.dev",
