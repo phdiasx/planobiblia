@@ -2,6 +2,10 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL("https://planobiblia.pages.dev"),
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   title: "Plano Bíblico — Crie seu plano de leitura personalizado",
   description:
     "Crie um plano de leitura bíblica personalizado: escolha os livros, defina o ritmo diário e gere um PDF para impressão. Gratuito e funciona offline.",
