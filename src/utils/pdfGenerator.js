@@ -1,4 +1,4 @@
-import { formatReadings } from "./planGenerator";
+﻿import { formatReadings } from "./planGenerator";
 
 // ─── Dimensões A4 ─────────────────────────────────────────────
 const PW = 210, PH = 297;
@@ -93,7 +93,7 @@ const colX = (c) => ML + c * (CW + CGAP);
 function fi(doc, arr) { doc.setFillColor(...arr); }
 function dr(doc, arr) { doc.setDrawColor(...arr); }
 function tx(doc, arr) { doc.setTextColor(...arr); }
-function sa(str) { return str.normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+function sa(str) { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 
 // ─── Pré-cálculo de páginas ───────────────────────────────────
 function calcTotalPages(items) {
@@ -273,7 +273,7 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
 
   tx(doc, pal.lit);
   doc.setFontSize(5.5);
-  const wd = day.date.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "").slice(0, 3);
+  const wd = sa(day.date.toLocaleDateString("pt-BR", { weekday: "short" })).replace(".", "").slice(0, 3);
   doc.text(wd, x + 18, vs);
 
   tx(doc, pal.drk);
