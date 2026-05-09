@@ -157,6 +157,15 @@ body {
 .step-line.done { background: var(--gold); }
 
 /* ══ Card de etapa ══════════════════════════════════════════ */
+@keyframes step-slide-forward {
+  from { opacity: 0; transform: translateX(22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes step-slide-back {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
 .step-content {
   background: var(--surface);
   border-radius: 14px;
@@ -164,6 +173,10 @@ body {
   padding: 24px 20px;
   box-shadow: var(--shadow);
   margin-bottom: 8px;
+  animation: step-slide-forward 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.step-content[data-dir="-1"] {
+  animation: step-slide-back 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .step-content h2 { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; margin-bottom: 4px; }
@@ -181,7 +194,7 @@ body {
 
 .nav-left, .nav-right { display: flex; align-items: center; }
 .nav-hint { font-size: 12px; color: var(--text-light); }
-.nav-credit { font-size: 10px; color: var(--text-light); text-align: center; flex: 1; letter-spacing: 0.2px; }
+.nav-credit { font-size: 10px; color: var(--text-muted); text-align: center; flex: 1; letter-spacing: 0.2px; }
 
 /* ══ Botões ═════════════════════════════════════════════════ */
 .btn-primary {
@@ -214,52 +227,33 @@ body {
 .btn-outline.btn-clear { color: var(--text-light); }
 .btn-outline.btn-clear:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
 
-/* ══ Seletor de Edição ══════════════════════════════════════ */
-.edition-selector {
-  display: flex; gap: 8px;
-  padding: 4px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  width: fit-content;
-}
-
-.edition-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 1px;
-  padding: 8px 20px; border: none; border-radius: 9px;
-  background: transparent; cursor: pointer;
-  font-size: 13px; font-weight: 600; color: var(--text-muted);
-  transition: all 0.18s; white-space: nowrap;
-}
-.edition-btn:hover { color: var(--text); background: var(--surface); }
-.edition-btn.active {
-  background: var(--surface);
-  color: var(--accent);
-  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
-}
-[data-theme="dark"] .edition-btn.active { box-shadow: 0 1px 6px rgba(0,0,0,0.35); }
-
-.edition-count {
-  font-size: 10px; font-weight: 500; color: var(--text-light);
-}
-.edition-btn.active .edition-count { color: var(--accent); opacity: 0.7; }
-
 /* ══ Seletor de Livros ══════════════════════════════════════ */
 .book-selector { display: flex; flex-direction: column; gap: 16px; }
 
-.quick-btns {
-  display: flex; gap: 8px;
-  overflow-x: auto; -webkit-overflow-scrolling: touch;
-  padding-bottom: 4px; scrollbar-width: none;
-}
-.quick-btns::-webkit-scrollbar { display: none; }
-
 .selection-info {
-  font-size: 13px; color: var(--gold); font-weight: 600;
-  padding: 7px 14px; background: var(--gold-bg);
-  border-radius: 99px; align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px; color: var(--gold); font-weight: 500;
+  padding: 8px 8px 8px 14px; background: var(--gold-bg);
+  border-radius: 99px; align-self: stretch;
   border: 1px solid var(--gold-muted);
 }
+
+.clear-btn {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.clear-btn:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-bg); }
 
 .book-group { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 
@@ -293,17 +287,26 @@ body {
   gap: 5px; padding: 10px; background: var(--surface);
 }
 
+@keyframes chip-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
 .book-chip {
   display: flex; align-items: center; gap: 6px;
   padding: 8px 10px; border: 1.5px solid var(--border);
   border-radius: 8px; cursor: pointer; font-size: 13px;
-  background: var(--surface); transition: all 0.12s;
+  background: var(--surface); transition: border-color 0.12s, background 0.12s, box-shadow 0.12s;
   user-select: none; -webkit-tap-highlight-color: transparent;
 }
 .book-chip input { display: none; }
 .book-chip:hover { border-color: var(--accent-muted); background: var(--accent-bg); }
-.book-chip:active { transform: scale(0.97); }
-.book-chip.selected { border-color: var(--accent); background: var(--accent-bg); }
+.book-chip:active { transform: scale(0.95); transition: transform 0.08s; }
+.book-chip.selected {
+  border-color: var(--accent); background: var(--accent-bg);
+  animation: chip-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
 .chip-abbr {
   font-size: 9px; font-weight: 700;
@@ -348,12 +351,58 @@ body {
   margin-bottom: 4px;
 }
 
+.presets-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .presets-label {
   font-size: 12px;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+.edition-pills {
+  display: flex;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.edition-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 99px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.edition-pill:hover { color: var(--text); }
+.edition-pill.active {
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+[data-theme="dark"] .edition-pill.active { box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+
+.edition-pill-count {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.65;
 }
 
 .presets-grid {

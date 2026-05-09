@@ -57,7 +57,7 @@ function BookGroup({ group, allBooks, selectedIds, onChange }) {
   );
 }
 
-export default function BookSelector({ selectedIds, onChange, edition, onEditionChange }) {
+export default function BookSelector({ selectedIds, onChange, edition }) {
   const allBooks = edition === "catolica"
     ? [...AT_BOOKS, ...DEUTERO_BOOKS, ...NT_BOOKS]
     : [...AT_BOOKS, ...NT_BOOKS];
@@ -66,48 +66,18 @@ export default function BookSelector({ selectedIds, onChange, edition, onEdition
     .filter(b => selectedIds.includes(b.id))
     .reduce((s, b) => s + b.chapters, 0);
 
-  const selectAll = () => onChange(allBooks.map(b => b.id));
-  const clearAll  = () => onChange([]);
-  const selectAT  = () => {
-    const ntIds = NT_BOOKS.map(b => b.id).filter(id => selectedIds.includes(id));
-    const atBase = AT_BOOKS.map(b => b.id);
-    const deuteroIds = edition === "catolica" ? DEUTERO_BOOKS.map(b => b.id) : [];
-    onChange([...atBase, ...deuteroIds, ...ntIds]);
-  };
-  const selectNT  = () => {
-    const atIds = allBooks.filter(b => b.testament === "AT").map(b => b.id).filter(id => selectedIds.includes(id));
-    onChange([...atIds, ...NT_BOOKS.map(b => b.id)]);
-  };
+  const clearAll = () => onChange([]);
 
   return (
     <div className="book-selector">
-      <div className="edition-selector">
-        <button
-          className={`edition-btn ${edition === "protestante" ? "active" : ""}`}
-          onClick={() => onEditionChange("protestante")}
-        >
-          Protestante
-          <span className="edition-count">66 livros</span>
-        </button>
-        <button
-          className={`edition-btn ${edition === "catolica" ? "active" : ""}`}
-          onClick={() => onEditionChange("catolica")}
-        >
-          Católica
-          <span className="edition-count">73 livros</span>
-        </button>
-      </div>
-
-      <div className="quick-btns">
-        <button className="btn-outline" onClick={selectAll}>Bíblia Completa</button>
-        <button className="btn-outline" onClick={selectAT}>Antigo Testamento</button>
-        <button className="btn-outline" onClick={selectNT}>Novo Testamento</button>
-        <button className="btn-outline btn-clear" onClick={clearAll}>Limpar</button>
-      </div>
-
       <div className="selection-info">
-        {selectedIds.length} livro{selectedIds.length !== 1 ? "s" : ""} selecionado{selectedIds.length !== 1 ? "s" : ""}
-        {selectedIds.length > 0 && <span> — {totalChapters} capítulos</span>}
+        <span>
+          <strong>{selectedIds.length}</strong> livro{selectedIds.length !== 1 ? "s" : ""}
+          {selectedIds.length > 0 && <> — <strong>{totalChapters}</strong> capítulos</>}
+        </span>
+        {selectedIds.length > 0 && (
+          <button className="clear-btn" onClick={clearAll}>Limpar</button>
+        )}
       </div>
 
       {GROUPS.map(group => (

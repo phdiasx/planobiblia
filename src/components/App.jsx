@@ -65,10 +65,26 @@ const PLAN_PRESETS = [
   },
 ];
 
-function PlanPresets({ onSelect }) {
+function PlanPresets({ onSelect, edition, onEditionChange }) {
   return (
     <div className="presets-section">
-      <p className="presets-label">Planos prontos — clique para usar</p>
+      <div className="presets-top">
+        <p className="presets-label">Planos prontos</p>
+        <div className="edition-pills">
+          <button
+            className={`edition-pill ${edition === "protestante" ? "active" : ""}`}
+            onClick={() => onEditionChange("protestante")}
+          >
+            Protestante <span className="edition-pill-count">66</span>
+          </button>
+          <button
+            className={`edition-pill ${edition === "catolica" ? "active" : ""}`}
+            onClick={() => onEditionChange("catolica")}
+          >
+            Católica <span className="edition-pill-count">73</span>
+          </button>
+        </div>
+      </div>
       <div className="presets-grid">
         {PLAN_PRESETS.map(p => (
           <button key={p.id} className="preset-card" onClick={() => onSelect(p)}>
@@ -210,6 +226,7 @@ function MoonIcon() {
 export default function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [step, setStep] = useState(0);
+  const [stepDir, setStepDir] = useState(1);
   const [selectedIds, setSelectedIds] = useState([]);
   const [config, setConfig] = useState({
     planName: "",
@@ -285,10 +302,15 @@ export default function App() {
     });
   }, [selectedBooks, config.chaptersPerDay, config.startDate]);
 
+  const goToStep = (next) => {
+    setStepDir(next > step ? 1 : -1);
+    setStep(next);
+  };
+
   const handlePresetSelect = (preset) => {
     setSelectedIds(preset.bookIds);
     setConfig(c => ({ ...c, chaptersPerDay: preset.chaptersPerDay, planName: preset.label }));
-    setStep(2);
+    goToStep(2);
   };
 
   const canNext = () => {
@@ -333,7 +355,7 @@ export default function App() {
               <div className={`step ${i === step ? "active" : i < step ? "done" : ""}`}>
                 <div
                   className="step-circle"
-                  onClick={() => i < step && setStep(i)}
+                  onClick={() => i < step && goToStep(i)}
                   style={{ cursor: i < step ? "pointer" : "default" }}
                 >
                   {i < step ? "✓" : i + 1}
@@ -347,17 +369,16 @@ export default function App() {
           ))}
         </div>
 
-        <div className="step-content">
+        <div className="step-content" key={step} data-dir={stepDir}>
           {step === 0 && (
             <>
               <h2>Selecione os livros</h2>
               <p className="step-hint">Escolha um plano pronto ou monte o seu abaixo.</p>
-              <PlanPresets onSelect={handlePresetSelect} />
+              <PlanPresets onSelect={handlePresetSelect} edition={edition} onEditionChange={handleEditionChange} />
               <BookSelector
                 selectedIds={selectedIds}
                 onChange={setSelectedIds}
                 edition={edition}
-                onEditionChange={handleEditionChange}
               />
             </>
           )}
@@ -381,7 +402,7 @@ export default function App() {
       <nav className="step-nav">
         <div className="nav-left">
           {step > 0 ? (
-            <button className="btn-secondary" onClick={() => setStep(s => s - 1)}>
+            <button className="btn-secondary" onClick={() => goToStep(step - 1)}>
               ← Voltar
             </button>
           ) : (
@@ -393,7 +414,7 @@ export default function App() {
         <div className="nav-right">
           {step < STEPS.length - 1 && (
             canNext() ? (
-              <button className="btn-primary" onClick={() => setStep(s => s + 1)}>
+              <button className="btn-primary" onClick={() => goToStep(step + 1)}>
                 Próximo →
               </button>
             ) : (
