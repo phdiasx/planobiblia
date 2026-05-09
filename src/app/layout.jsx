@@ -91,13 +91,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <head>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" strategy="afterInteractive" />
-        <Script id="ga4-init" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-J0FQGYN4F6');
-        `}} />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#C49A1C" />
@@ -113,7 +106,16 @@ export default function RootLayout({ children }) {
           } catch(e) {}
         `}} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" strategy="afterInteractive" />
+        <Script id="ga4-init" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-J0FQGYN4F6');
+        `}} />
+      </body>
     </html>
   );
 }
