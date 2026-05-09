@@ -95,7 +95,7 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
           </div>
         </div>
         <div className="pix-body">
-          <img src="/qr-code-pix.jpeg" alt="QR Code PIX" className="pix-qr" width="110" height="110" />
+          <img src="/qr-code-pix.jpeg" alt="QR Code PIX" className="pix-qr" width="110" height="110" loading="lazy" decoding="async" />
           <div className="pix-right">
             <p className="pix-scan-hint">Escaneie o QR Code ou copie a chave abaixo</p>
             <button className="pix-copy" onClick={handleCopy}>

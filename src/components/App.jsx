@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import dynamic from "next/dynamic";
 import BookSelector from "@/components/BookSelector";
 import PlanConfig from "@/components/PlanConfig";
-import PlanPreview from "@/components/PlanPreview";
 import { generatePlan } from "@/utils/planGenerator";
+
+const PlanPreview = dynamic(() => import("@/components/PlanPreview"), { ssr: false });
 import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
 import {
   IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
