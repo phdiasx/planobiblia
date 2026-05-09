@@ -90,6 +90,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="pt-BR">
       <head>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-J0FQGYN4F6');
+        `}} />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#C49A1C" />

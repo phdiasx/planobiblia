@@ -43,6 +43,14 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
         totalChapters,
         theme,
       });
+      if (typeof window !== "undefined" && window.gtag) {
+        window.gtag("event", "download_pdf", {
+          plan_name: config.planName || "Plano de Leitura Bíblica",
+          total_days: days.length,
+          total_chapters: totalChapters,
+          theme,
+        });
+      }
     } finally {
       setExporting(false);
     }
