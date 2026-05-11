@@ -4,13 +4,14 @@ import { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
 import BookSelector from "@/components/BookSelector";
 import PlanConfig from "@/components/PlanConfig";
+import LandingPage from "@/components/LandingPage";
 import { generatePlan } from "@/utils/planGenerator";
 
 const PlanPreview = dynamic(() => import("@/components/PlanPreview"), { ssr: false });
 import { BOOKS, DEUTERO_IDS, AT_BOOKS, NT_BOOKS } from "@/data/bible";
 import {
   IconBook, IconCross, IconScroll, IconNote, IconFish, IconCandle,
-  IconLibrary, IconSliders, IconFilePdf, IconSpeech, IconArrow, IconClock,
+  IconSpeech, IconArrow, IconClock,
 } from "@/components/Icons";
 import { DEUTERO_BOOKS } from "@/data/bible";
 
@@ -135,113 +136,6 @@ function PlanPresets({ onSelect, edition, onEditionChange }) {
   );
 }
 
-const FEATURES = [
-  { icon: <IconLibrary />, title: "66 ou 73 livros", desc: "Protestante ou Católica" },
-  { icon: <IconSliders />, title: "Seu ritmo", desc: "De 1 a 10+ caps/dia" },
-  { icon: <IconFilePdf />, title: "Pronto para imprimir", desc: "4 modelos de PDF" },
-];
-
-function useCountUp(target, duration = 1200, delay = 0) {
-  const [value, setValue] = useState(0);
-  useEffect(() => {
-    let start;
-    let frame;
-    const timeout = setTimeout(() => {
-      const step = (ts) => {
-        if (!start) start = ts;
-        const progress = Math.min((ts - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - progress, 3);
-        setValue(Math.floor(eased * target));
-        if (progress < 1) frame = requestAnimationFrame(step);
-        else setValue(target);
-      };
-      frame = requestAnimationFrame(step);
-    }, delay);
-    return () => { clearTimeout(timeout); cancelAnimationFrame(frame); };
-  }, [target, duration, delay]);
-  return value;
-}
-
-function IntroScreen({ onStart, dark, onToggleDark }) {
-  const [visible, setVisible] = useState(false);
-  const [leaving, setLeaving] = useState(false);
-  const books = useCountUp(66, 900, 400);
-  const chapters = useCountUp(1189, 1400, 600);
-
-  useEffect(() => {
-    const t = requestAnimationFrame(() => setVisible(true));
-    return () => cancelAnimationFrame(t);
-  }, []);
-
-  const handleStart = () => {
-    setLeaving(true);
-    setTimeout(onStart, 420);
-  };
-
-  return (
-    <div className={`intro-screen ${visible ? "intro-visible" : ""} ${leaving ? "intro-leaving" : ""}`}>
-      <div className="intro-bg-orb intro-orb-1" />
-      <div className="intro-bg-orb intro-orb-2" />
-
-      <div className="intro-actions">
-        <button className="intro-theme-toggle" onClick={onToggleDark} title={dark ? "Modo claro" : "Modo escuro"}>
-          {dark ? <SunIcon /> : <MoonIcon />}
-        </button>
-      </div>
-
-      <div className="intro-content">
-        <div className="intro-logo-wrap intro-anim-0">
-          <IconBook className="intro-logo-icon" />
-          <div className="intro-logo-ring" />
-        </div>
-
-        <h1 className="intro-title intro-anim-1">
-          Plano de Leitura<br /><span className="intro-title-accent">Bíblica</span>
-        </h1>
-
-        <p className="intro-desc intro-anim-2">
-          Organize sua jornada pela Palavra de Deus. Escolha os livros, defina seu ritmo e baixe um plano personalizado em PDF.
-        </p>
-
-        <div className="intro-stats intro-anim-3">
-          <div className="intro-stat">
-            <span className="intro-stat-num">{books}</span>
-            <span className="intro-stat-label">livros</span>
-          </div>
-          <div className="intro-stat-divider" />
-          <div className="intro-stat">
-            <span className="intro-stat-num">{chapters}</span>
-            <span className="intro-stat-label">capítulos</span>
-          </div>
-          <div className="intro-stat-divider" />
-          <div className="intro-stat">
-            <span className="intro-stat-num">100%</span>
-            <span className="intro-stat-label">gratuito</span>
-          </div>
-        </div>
-
-        <div className="intro-features intro-anim-4">
-          {FEATURES.map((f, i) => (
-            <div key={i} className="intro-feature-card">
-              <span className="intro-feature-icon">{f.icon}</span>
-              <div>
-                <p className="intro-feature-title">{f.title}</p>
-                <p className="intro-feature-desc">{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <button className="intro-btn intro-anim-5" onClick={handleStart}>
-          <span>Criar meu plano</span>
-          <span className="intro-btn-arrow">→</span>
-        </button>
-
-        <a href="/sobre" className="intro-credit intro-anim-5">criado por Paulo Henrique Dias</a>
-      </div>
-    </div>
-  );
-}
 
 function SunIcon() {
   return (
@@ -365,7 +259,7 @@ export default function App() {
 
   if (showIntro) {
     return (
-      <IntroScreen
+      <LandingPage
         onStart={() => setShowIntro(false)}
         dark={dark}
         onToggleDark={() => setDark(d => !d)}
