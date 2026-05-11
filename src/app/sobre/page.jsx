@@ -35,20 +35,16 @@ export default function SobrePage() {
           <div className="sb-body">
 
             <p>
-              Me chamo <strong>Paulo Henrique Dias</strong>. Trabalho com engenharia de dados —
-              pipelines, modelagem, sistemas distribuídos. Durante o dia, penso em como
-              estruturar informação. À noite, leio teologia.
+              Me chamo <strong>Paulo Henrique Dias</strong>. Sou cristão e trabalho com tecnologia.
             </p>
 
             <p>
-              Há alguns anos decidi percorrer a Bíblia de forma sistemática. Queria escolher
-              os livros, definir o ritmo, organizar a leitura do meu jeito — não seguir o
-              cronograma de outra pessoa. Procurei e não encontrei nada que me desse esse
-              controle. Os planos que existiam eram prontos, fechados.
+              Quis percorrer a Bíblia de forma sistemática, escolhendo os livros e definindo o ritmo.
+              Não encontrei nada que me desse esse controle. Os planos eram prontos, fechados.
             </p>
 
             <p>
-              Então construí para mim mesmo.
+              Então construí.
             </p>
 
             <hr className="sb-rule-sm" />
