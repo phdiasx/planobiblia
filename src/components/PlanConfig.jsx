@@ -36,6 +36,12 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
     return s + (sel ? sel.length : b.chapters);
   }, 0);
 
+  const resetBook = (bookId) => {
+    const ranges = { ...chapterRanges };
+    delete ranges[bookId];
+    onChange({ ...config, chapterRanges: ranges });
+  };
+
   const toggleChapter = (bookId, chapter) => {
     const book = BOOKS.find(b => b.id === bookId);
     const all = Array.from({ length: book.chapters }, (_, i) => i + 1);
@@ -234,7 +240,14 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
                   <div key={book.id} className={`chapter-range-row ${isCustom ? "active" : ""}`}>
                     <div className="chapter-range-header">
                       <span className="chapter-range-book">{book.name}</span>
-                      <span className="chapter-range-count">{included.length}/{book.chapters}</span>
+                      <div className="ch-book-meta">
+                        <span className="chapter-range-count">{included.length}/{book.chapters}</span>
+                        {isCustom && (
+                          <button className="ch-book-reset" onClick={() => resetBook(book.id)}>
+                            Todos
+                          </button>
+                        )}
+                      </div>
                     </div>
                     {book.chapters === 1 ? (
                       <span className="chapter-range-single">Livro de 1 capítulo</span>

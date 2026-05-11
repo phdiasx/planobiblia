@@ -12,15 +12,23 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [exporting, setExporting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
-  // PDF options
+  const [pdfTab, setPdfTab] = useState("estilo");
   const [theme, setTheme] = useState("classico");
   const [columns, setColumns] = useState(2);
   const [rowSpacing, setRowSpacing] = useState("normal");
+  const [checkStyle, setCheckStyle] = useState("square");
   const [weekDividers, setWeekDividers] = useState(true);
   const [showStats, setShowStats] = useState(true);
   const [showDates, setShowDates] = useState(true);
   const [customColor1, setCustomColor1] = useState("#1B4B82");
   const [customColor2, setCustomColor2] = useState("#C49A1C");
+
+  const customPal = buildCustomPalette(customColor1, customColor2);
+
+  const themeEntries = [
+    ...Object.entries(PDF_THEMES),
+    ["personalizado", { ...customPal, label: "Personalizado" }],
+  ];
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(shareUrl || window.location.href);
@@ -42,9 +50,7 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const handleExport = async () => {
     setExporting(true);
     try {
-      const customPalette = theme === "personalizado"
-        ? buildCustomPalette(customColor1, customColor2)
-        : null;
+      const customPalette = theme === "personalizado" ? customPal : null;
       await exportToPDF({
         planName: config.planName || "Plano de Leitura Bíblica",
         days,
@@ -54,6 +60,7 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
         customPalette,
         columns,
         rowSpacing,
+        checkStyle,
         weekDividers,
         showStats,
         showDates,
@@ -89,127 +96,117 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
         </div>
       </div>
 
-      {/* ── Opções do PDF ── */}
+      {/* ── Personalizar PDF ── */}
       <div className="pdf-opts">
-        <p className="pdf-opts-title">Personalizar PDF</p>
+        <div className="pdf-tabs">
+          {[["estilo", "Estilo"], ["layout", "Layout"], ["conteudo", "Conteúdo"]].map(([key, label]) => (
+            <button
+              key={key}
+              className={`pdf-tab ${pdfTab === key ? "active" : ""}`}
+              onClick={() => setPdfTab(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
-        <div className="pdf-opts-grid">
-          {/* Tema */}
-          <div className="pdf-opt-group">
-            <span className="pdf-opt-label">Tema</span>
-            <div className="pdf-theme-selector">
-              {Object.entries(PDF_THEMES).map(([key, t]) => (
-                <button
+        {pdfTab === "estilo" && (
+          <div className="pdf-tab-panel">
+            <div className="pdf-theme-grid">
+              {themeEntries.map(([key, pal]) => (
+                <ThemeCard
                   key={key}
-                  className={`pdf-theme-card ${theme === key ? "active" : ""}`}
+                  palette={pal}
+                  isActive={theme === key}
                   onClick={() => setTheme(key)}
-                >
-                  <div className="pdf-theme-swatches">
-                    {t.swatches.map(c => (
-                      <span key={c} className="pdf-swatch" style={{ background: c }} />
-                    ))}
-                  </div>
-                  <span className="pdf-theme-name">{t.label}</span>
-                </button>
+                />
               ))}
-              <button
-                className={`pdf-theme-card ${theme === "personalizado" ? "active" : ""}`}
-                onClick={() => setTheme("personalizado")}
-              >
-                <div className="pdf-theme-swatches">
-                  <span className="pdf-swatch" style={{ background: customColor1 }} />
-                  <span className="pdf-swatch" style={{ background: customColor2 }} />
-                  <span className="pdf-swatch" style={{ background: "#f5f5f5" }} />
-                </div>
-                <span className="pdf-theme-name">Personalizado</span>
-              </button>
             </div>
             {theme === "personalizado" && (
               <div className="pdf-color-pickers">
                 <label className="pdf-color-field">
                   <span>Cor principal</span>
-                  <input type="color" value={customColor1} onChange={e => setCustomColor1(e.target.value)} />
+                  <input
+                    type="color"
+                    value={customColor1}
+                    onChange={e => setCustomColor1(e.target.value)}
+                  />
                 </label>
                 <label className="pdf-color-field">
                   <span>Destaque</span>
-                  <input type="color" value={customColor2} onChange={e => setCustomColor2(e.target.value)} />
+                  <input
+                    type="color"
+                    value={customColor2}
+                    onChange={e => setCustomColor2(e.target.value)}
+                  />
                 </label>
               </div>
             )}
           </div>
+        )}
 
-          {/* Colunas */}
-          <div className="pdf-opt-group">
-            <span className="pdf-opt-label">Colunas</span>
-            <div className="pdf-opt-pills">
-              <button
-                className={`pdf-opt-pill ${columns === 2 ? "active" : ""}`}
-                onClick={() => setColumns(2)}
-              >
-                <ColsIcon2 /> 2 colunas
-              </button>
-              <button
-                className={`pdf-opt-pill ${columns === 1 ? "active" : ""}`}
-                onClick={() => setColumns(1)}
-              >
-                <ColsIcon1 /> 1 coluna
-              </button>
+        {pdfTab === "layout" && (
+          <div className="pdf-tab-panel">
+            <div className="pdf-opt-group">
+              <span className="pdf-opt-label">Colunas</span>
+              <div className="pdf-opt-pills">
+                <button className={`pdf-opt-pill ${columns === 2 ? "active" : ""}`} onClick={() => setColumns(2)}>
+                  <ColsIcon2 /> 2 colunas
+                </button>
+                <button className={`pdf-opt-pill ${columns === 1 ? "active" : ""}`} onClick={() => setColumns(1)}>
+                  <ColsIcon1 /> 1 coluna
+                </button>
+              </div>
+            </div>
+            <div className="pdf-opt-group">
+              <span className="pdf-opt-label">Espaçamento de linha</span>
+              <div className="pdf-opt-pills">
+                <button className={`pdf-opt-pill ${rowSpacing === "normal" ? "active" : ""}`} onClick={() => setRowSpacing("normal")}>
+                  <SpacingIconNormal /> Normal
+                </button>
+                <button className={`pdf-opt-pill ${rowSpacing === "spacious" ? "active" : ""}`} onClick={() => setRowSpacing("spacious")}>
+                  <SpacingIconSpacious /> Espaçoso
+                </button>
+              </div>
+            </div>
+            <div className="pdf-opt-group">
+              <span className="pdf-opt-label">Caixa de seleção</span>
+              <div className="pdf-opt-pills">
+                <button className={`pdf-opt-pill ${checkStyle === "square" ? "active" : ""}`} onClick={() => setCheckStyle("square")}>
+                  <CheckIconSquare /> Quadrado
+                </button>
+                <button className={`pdf-opt-pill ${checkStyle === "circle" ? "active" : ""}`} onClick={() => setCheckStyle("circle")}>
+                  <CheckIconCircle /> Círculo
+                </button>
+                <button className={`pdf-opt-pill ${checkStyle === "none" ? "active" : ""}`} onClick={() => setCheckStyle("none")}>
+                  Nenhum
+                </button>
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Espaçamento */}
-          <div className="pdf-opt-group">
-            <span className="pdf-opt-label">Espaçamento</span>
-            <div className="pdf-opt-pills">
-              <button
-                className={`pdf-opt-pill ${rowSpacing === "normal" ? "active" : ""}`}
-                onClick={() => setRowSpacing("normal")}
-              >
-                <SpacingIconNormal /> Normal
-              </button>
-              <button
-                className={`pdf-opt-pill ${rowSpacing === "spacious" ? "active" : ""}`}
-                onClick={() => setRowSpacing("spacious")}
-              >
-                <SpacingIconSpacious /> Espaçoso
-              </button>
-            </div>
-          </div>
-
-          {/* Toggles */}
-          <div className="pdf-opt-group">
-            <span className="pdf-opt-label">Extras</span>
+        {pdfTab === "conteudo" && (
+          <div className="pdf-tab-panel">
             <div className="pdf-opt-toggles">
               <label className="pdf-toggle">
-                <input
-                  type="checkbox"
-                  checked={showDates}
-                  onChange={e => setShowDates(e.target.checked)}
-                />
+                <input type="checkbox" checked={showDates} onChange={e => setShowDates(e.target.checked)} />
                 <span className="pdf-toggle-box" />
                 <span>Mostrar datas</span>
               </label>
               <label className="pdf-toggle">
-                <input
-                  type="checkbox"
-                  checked={weekDividers}
-                  onChange={e => setWeekDividers(e.target.checked)}
-                />
+                <input type="checkbox" checked={weekDividers} onChange={e => setWeekDividers(e.target.checked)} />
                 <span className="pdf-toggle-box" />
                 <span>Separadores de semana</span>
               </label>
               <label className="pdf-toggle">
-                <input
-                  type="checkbox"
-                  checked={showStats}
-                  onChange={e => setShowStats(e.target.checked)}
-                />
+                <input type="checkbox" checked={showStats} onChange={e => setShowStats(e.target.checked)} />
                 <span className="pdf-toggle-box" />
                 <span>Estatísticas na capa</span>
               </label>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* ── Tabela de dias ── */}
@@ -243,11 +240,54 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   );
 }
 
+function ThemeCard({ palette, isActive, onClick }) {
+  const r = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+  return (
+    <button className={`pdf-theme-card ${isActive ? "active" : ""}`} onClick={onClick}>
+      <div className="ptm-page">
+        <div className="ptm-hdr" style={{ background: r(palette.hdr) }}>
+          <div className="ptm-acc" style={{ background: r(palette.acc) }} />
+        </div>
+        <div className="ptm-stat" style={{ background: r(palette.hdrXL) }} />
+        <div className="ptm-rows">
+          {[0, 1, 2, 3].map(i => (
+            <div
+              key={i}
+              className="ptm-row"
+              style={i % 2 ? { background: r(palette.evn) } : undefined}
+            >
+              <span className="ptm-cb" style={{ borderColor: r(palette.hdr2) }} />
+              <span className="ptm-ln" style={{ background: r(palette.mid) }} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <span className="pdf-theme-name">{palette.label}</span>
+    </button>
+  );
+}
+
+function CheckIconSquare() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="0.75" y="0.75" width="11.5" height="11.5" rx="1.5" />
+    </svg>
+  );
+}
+
+function CheckIconCircle() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <circle cx="6.5" cy="6.5" r="5.75" />
+    </svg>
+  );
+}
+
 function ColsIcon2() {
   return (
     <svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="0.75" y="0.75" width="5.5" height="10.5" rx="1"/>
-      <rect x="7.75" y="0.75" width="5.5" height="10.5" rx="1"/>
+      <rect x="0.75" y="0.75" width="5.5" height="10.5" rx="1" />
+      <rect x="7.75" y="0.75" width="5.5" height="10.5" rx="1" />
     </svg>
   );
 }
@@ -255,7 +295,7 @@ function ColsIcon2() {
 function ColsIcon1() {
   return (
     <svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <rect x="1.75" y="0.75" width="10.5" height="10.5" rx="1"/>
+      <rect x="1.75" y="0.75" width="10.5" height="10.5" rx="1" />
     </svg>
   );
 }
@@ -263,10 +303,10 @@ function ColsIcon1() {
 function SpacingIconNormal() {
   return (
     <svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <line x1="1" y1="2" x2="13" y2="2"/>
-      <line x1="1" y1="5" x2="13" y2="5"/>
-      <line x1="1" y1="8" x2="13" y2="8"/>
-      <line x1="1" y1="11" x2="13" y2="11"/>
+      <line x1="1" y1="2" x2="13" y2="2" />
+      <line x1="1" y1="5" x2="13" y2="5" />
+      <line x1="1" y1="8" x2="13" y2="8" />
+      <line x1="1" y1="11" x2="13" y2="11" />
     </svg>
   );
 }
@@ -274,9 +314,9 @@ function SpacingIconNormal() {
 function SpacingIconSpacious() {
   return (
     <svg width="14" height="12" viewBox="0 0 14 12" fill="none" stroke="currentColor" strokeWidth="1.5">
-      <line x1="1" y1="2" x2="13" y2="2"/>
-      <line x1="1" y1="6.5" x2="13" y2="6.5"/>
-      <line x1="1" y1="11" x2="13" y2="11"/>
+      <line x1="1" y1="2" x2="13" y2="2" />
+      <line x1="1" y1="6.5" x2="13" y2="6.5" />
+      <line x1="1" y1="11" x2="13" y2="11" />
     </svg>
   );
 }

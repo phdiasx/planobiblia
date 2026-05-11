@@ -78,6 +78,70 @@ export const PDF_THEMES = {
     evn:    [244, 250, 244],
     wkg:    [225, 242, 225],
   },
+  lavanda: {
+    label:    "Lavanda",
+    swatches: ["#7c5cbf", "#e8a0c8", "#f8f4ff"],
+    hdr:    [124,  92, 191],
+    hdr2:   [163, 141, 210],
+    hdrL:   [222, 214, 239],
+    hdrXL:  [249, 247, 252],
+    hdrSub: [192, 177, 224],
+    acc:    [232, 160, 200],
+    drk:    [ 74,  55, 114],
+    mid:    [176, 157, 212],
+    lit:    [196, 182, 226],
+    bdr:    [232, 226, 244],
+    evn:    [251, 250, 253],
+    wkg:    [245, 242, 250],
+  },
+  rosa: {
+    label:    "Rosa",
+    swatches: ["#b5476e", "#f4a0b5", "#fff5f8"],
+    hdr:    [181,  71, 110],
+    hdr2:   [203, 126, 154],
+    hdrL:   [237, 209, 219],
+    hdrXL:  [251, 246, 248],
+    hdrSub: [220, 167, 185],
+    acc:    [244, 160, 181],
+    drk:    [109,  43,  66],
+    mid:    [207, 146, 168],
+    lit:    [222, 172, 190],
+    bdr:    [242, 222, 229],
+    evn:    [253, 249, 251],
+    wkg:    [249, 240, 244],
+  },
+  escuro: {
+    label:    "Escuro",
+    swatches: ["#1a2234", "#d4972a", "#f4f5f7"],
+    hdr:    [ 26,  34,  52],
+    hdr2:   [ 95, 100, 113],
+    hdrL:   [198, 200, 204],
+    hdrXL:  [244, 244, 245],
+    hdrSub: [145, 149, 158],
+    acc:    [212, 151,  42],
+    drk:    [ 16,  20,  31],
+    mid:    [122, 126, 136],
+    lit:    [152, 156, 164],
+    bdr:    [214, 215, 219],
+    evn:    [248, 248, 249],
+    wkg:    [237, 238, 239],
+  },
+  ardosia: {
+    label:    "Ardósia",
+    swatches: ["#334155", "#0ea5e9", "#f8fafc"],
+    hdr:    [ 51,  65,  85],
+    hdr2:   [112, 122, 136],
+    hdrL:   [204, 208, 213],
+    hdrXL:  [245, 246, 247],
+    hdrSub: [157, 164, 173],
+    acc:    [ 14, 165, 233],
+    drk:    [ 31,  39,  51],
+    mid:    [135, 143, 154],
+    lit:    [163, 170, 179],
+    bdr:    [218, 221, 224],
+    evn:    [249, 249, 250],
+    wkg:    [239, 240, 242],
+  },
 };
 
 // ─── Paleta personalizada a partir de 2 cores hex ────────────
@@ -263,10 +327,18 @@ function drawDayRow(doc, x, y, day, isEven, pal, L) {
   doc.setLineWidth(0.12);
   doc.line(x, y + L.rowH, x + L.cw, y + L.rowH);
 
-  dr(doc, pal.hdr2);
-  doc.setLineWidth(0.45);
   const cbSz = 3.6;
-  doc.roundedRect(x + 1.5, y + (L.rowH - cbSz) / 2, cbSz, cbSz, 0.5, 0.5);
+  const cbX = x + 1.5;
+  const cbY = y + (L.rowH - cbSz) / 2;
+  if (L.checkStyle !== "none") {
+    dr(doc, pal.hdr2);
+    doc.setLineWidth(0.45);
+    if (L.checkStyle === "circle") {
+      doc.circle(cbX + cbSz / 2, y + L.rowH / 2, cbSz / 2, "S");
+    } else {
+      doc.roundedRect(cbX, cbY, cbSz, cbSz, 0.5, 0.5);
+    }
+  }
 
   const vc = y + L.rowH * 0.47;
   const vs = y + L.rowH * 0.82;
@@ -314,6 +386,7 @@ export async function exportToPDF({
   customPalette = null,
   columns       = 2,
   rowSpacing    = "normal",
+  checkStyle    = "square",
   weekDividers  = true,
   showStats     = true,
   showDates     = true,
@@ -331,7 +404,7 @@ export async function exportToPDF({
   const bodyY0PN = HDR_H + CHDR_H;
 
   const L = {
-    cols, cgap, cw, rowH, bodyY0P1, bodyY0PN, showDates,
+    cols, cgap, cw, rowH, bodyY0P1, bodyY0PN, showDates, checkStyle,
     colX: (c) => ML + c * (cw + cgap),
   };
 
