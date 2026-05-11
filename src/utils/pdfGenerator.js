@@ -1,23 +1,15 @@
-﻿import { formatReadings } from "./planGenerator";
+import { formatReadings } from "./planGenerator";
 
-// ─── Dimensões A4 ─────────────────────────────────────────────
+// ─── Constantes fixas ─────────────────────────────────────────
 const PW = 210, PH = 297;
 const ML = 11, MR = 11;
 const CGAP = 6;
-const COLS = 2;
-const CW = (PW - ML - MR - CGAP) / COLS;
-
 const HDR_H  = 20;
 const STAT_H = 12;
 const CHDR_H = 7;
 const WEEK_H = 6;
-const ROW_H  = 7.5;
 const FTR_H  = 9;
-
-const BODY_Y0_P1 = HDR_H + STAT_H + CHDR_H;
-const BODY_Y0_PN = HDR_H + CHDR_H;
-const BODY_Y1    = PH - FTR_H;
-
+const BODY_Y1 = PH - FTR_H;
 const WHT = [255, 255, 255];
 
 // ─── Temas ────────────────────────────────────────────────────
@@ -89,21 +81,21 @@ export const PDF_THEMES = {
 };
 
 // ─── Helpers ──────────────────────────────────────────────────
-const colX = (c) => ML + c * (CW + CGAP);
 function fi(doc, arr) { doc.setFillColor(...arr); }
 function dr(doc, arr) { doc.setDrawColor(...arr); }
 function tx(doc, arr) { doc.setTextColor(...arr); }
-function sa(str) { return str.normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
+function sa(str) { return str.normalize("NFD").replace(/[̀-ͯ]/g, ""); }
 
 // ─── Pré-cálculo de páginas ───────────────────────────────────
-function calcTotalPages(items) {
+function calcTotalPages(items, L) {
   let page = 1, col = 0, y = 0;
   for (const item of items) {
-    const h = item.type === "week" ? WEEK_H : ROW_H;
-    const bh = page === 1 ? BODY_Y1 - BODY_Y0_P1 : BODY_Y1 - BODY_Y0_PN;
+    const h = item.type === "week" ? WEEK_H : L.rowH;
+    const bodyY0 = page === 1 ? L.bodyY0P1 : L.bodyY0PN;
+    const bh = BODY_Y1 - bodyY0;
     if (y + h > bh) {
       y = 0; col++;
-      if (col >= COLS) { col = 0; page++; }
+      if (col >= L.cols) { col = 0; page++; }
     }
     y += h;
   }
@@ -114,32 +106,27 @@ function calcTotalPages(items) {
 function drawPageHeader(doc, name, pageNum, totalPages, pal) {
   fi(doc, pal.hdr);
   doc.rect(0, 0, PW, HDR_H, "F");
-
   fi(doc, pal.acc);
   doc.rect(0, 0, 3.5, HDR_H, "F");
-
   tx(doc, WHT);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.text(name, ML + 5, 9);
-
   doc.setFont("helvetica", "normal");
   doc.setFontSize(7);
   tx(doc, pal.hdrSub);
   doc.text("Plano de Leitura Bíblica", ML + 5, 16);
-
   tx(doc, WHT);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.text(`${pageNum} / ${totalPages}`, PW - MR, 10.5, { align: "right" });
-
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
   tx(doc, pal.hdrSub);
   doc.text("página", PW - MR, 17, { align: "right" });
 }
 
-// ─── Barra de estatísticas (1ª página) ───────────────────────
+// ─── Barra de estatísticas ────────────────────────────────────
 function drawStatsBar(doc, days, chapPerDay, totalCap, pal) {
   const y = HDR_H;
   fi(doc, pal.hdrXL);
@@ -156,8 +143,8 @@ function drawStatsBar(doc, days, chapPerDay, totalCap, pal) {
     { v: fmt(days[0]?.date),               l: "INÍCIO"    },
     { v: fmt(days[days.length - 1]?.date), l: "TÉRMINO"   },
     { v: String(days.length),              l: "DIAS"      },
-    { v: `${chapPerDay}x`,                l: "CAP./DIA"  },
-    { v: String(totalCap),               l: "CAPÍTULOS" },
+    { v: `${chapPerDay}x`,                 l: "CAP./DIA"  },
+    { v: String(totalCap),                 l: "CAPÍTULOS" },
   ];
 
   const sw = PW / stats.length;
@@ -180,15 +167,14 @@ function drawStatsBar(doc, days, chapPerDay, totalCap, pal) {
   }
 }
 
-// ─── Cabeçalho de uma coluna ─────────────────────────────────
-function drawColHeader(doc, y, c, pal) {
-  const x = colX(c);
+// ─── Cabeçalho de coluna ─────────────────────────────────────
+function drawColHeader(doc, y, c, pal, L) {
+  const x = L.colX(c);
   fi(doc, pal.hdrL);
-  doc.rect(x, y, CW, CHDR_H, "F");
+  doc.rect(x, y, L.cw, CHDR_H, "F");
   dr(doc, pal.hdr2);
   doc.setLineWidth(0.5);
-  doc.line(x, y + CHDR_H, x + CW, y + CHDR_H);
-
+  doc.line(x, y + CHDR_H, x + L.cw, y + CHDR_H);
   tx(doc, pal.hdr);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6);
@@ -197,9 +183,9 @@ function drawColHeader(doc, y, c, pal) {
   doc.text("LEITURA", x + 34, y + 4.7);
 }
 
-// ─── Divisória vertical entre colunas ────────────────────────
-function drawColDivider(doc, bodyY0, pal) {
-  const x = ML + CW + CGAP / 2;
+// ─── Divisória entre colunas ─────────────────────────────────
+function drawColDivider(doc, bodyY0, pal, L) {
+  const x = ML + L.cw + L.cgap / 2;
   dr(doc, pal.bdr);
   doc.setLineWidth(0.2);
   doc.line(x, bodyY0 - CHDR_H, x, BODY_Y1);
@@ -211,7 +197,6 @@ function drawFooter(doc, name, fromDay, toDay, totalDays, pal) {
   dr(doc, pal.bdr);
   doc.setLineWidth(0.3);
   doc.line(ML, y + 1.5, PW - MR, y + 1.5);
-
   doc.setFont("helvetica", "normal");
   doc.setFontSize(6.5);
   tx(doc, pal.lit);
@@ -221,44 +206,43 @@ function drawFooter(doc, name, fromDay, toDay, totalDays, pal) {
 }
 
 // ─── Separador de semana ──────────────────────────────────────
-function drawWeekRow(doc, x, y, num, pal) {
+function drawWeekRow(doc, x, y, num, pal, L) {
   fi(doc, pal.wkg);
-  doc.rect(x, y, CW, WEEK_H, "F");
+  doc.rect(x, y, L.cw, WEEK_H, "F");
   dr(doc, pal.hdrL);
   doc.setLineWidth(0.2);
-  doc.line(x, y + WEEK_H, x + CW, y + WEEK_H);
+  doc.line(x, y + WEEK_H, x + L.cw, y + WEEK_H);
 
   const mid = y + WEEK_H / 2;
-  const lx1 = x + 4,           lx2 = x + CW / 2 - 14;
-  const lx3 = x + CW / 2 + 14, lx4 = x + CW - 4;
+  const lx1 = x + 4,            lx2 = x + L.cw / 2 - 14;
+  const lx3 = x + L.cw / 2 + 14, lx4 = x + L.cw - 4;
   dr(doc, pal.hdr2);
   doc.setLineWidth(0.3);
   doc.line(lx1, mid, lx2, mid);
   doc.line(lx3, mid, lx4, mid);
-
   tx(doc, pal.hdr2);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.5);
-  doc.text(`SEMANA ${num}`, x + CW / 2, y + 4.1, { align: "center" });
+  doc.text(`SEMANA ${num}`, x + L.cw / 2, y + 4.1, { align: "center" });
 }
 
 // ─── Linha de dia ─────────────────────────────────────────────
-function drawDayRow(doc, x, y, day, isEven, pal) {
+function drawDayRow(doc, x, y, day, isEven, pal, L) {
   if (isEven) {
     fi(doc, pal.evn);
-    doc.rect(x, y, CW, ROW_H, "F");
+    doc.rect(x, y, L.cw, L.rowH, "F");
   }
   dr(doc, pal.bdr);
   doc.setLineWidth(0.12);
-  doc.line(x, y + ROW_H, x + CW, y + ROW_H);
+  doc.line(x, y + L.rowH, x + L.cw, y + L.rowH);
 
   dr(doc, pal.hdr2);
   doc.setLineWidth(0.45);
   const cbSz = 3.6;
-  doc.roundedRect(x + 1.5, y + (ROW_H - cbSz) / 2, cbSz, cbSz, 0.5, 0.5);
+  doc.roundedRect(x + 1.5, y + (L.rowH - cbSz) / 2, cbSz, cbSz, 0.5, 0.5);
 
-  const vc = y + ROW_H * 0.47;
-  const vs = y + ROW_H * 0.82;
+  const vc = y + L.rowH * 0.47;
+  const vs = y + L.rowH * 0.82;
 
   tx(doc, pal.hdr);
   doc.setFont("helvetica", "bold");
@@ -280,7 +264,7 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.8);
   const txt = formatReadings(day.readings, { useAbbr: true });
-  const maxW = CW - 35;
+  const maxW = L.cw - 35;
   const lines = doc.splitTextToSize(txt, maxW);
   doc.text(lines[0] || "", x + 34, vc);
   if (lines.length > 1) {
@@ -292,36 +276,60 @@ function drawDayRow(doc, x, y, day, isEven, pal) {
 }
 
 // ─── Exportar ─────────────────────────────────────────────────
-export async function exportToPDF({ planName, days, chaptersPerDay, totalChapters, theme = "classico" }) {
+export async function exportToPDF({
+  planName,
+  days,
+  chaptersPerDay,
+  totalChapters,
+  theme         = "classico",
+  columns       = 2,
+  rowSpacing    = "normal",
+  weekDividers  = true,
+  showStats     = true,
+}) {
   const { jsPDF } = await import("jspdf");
-  const pal      = PDF_THEMES[theme] ?? PDF_THEMES.classico;
-  const name     = planName || "Plano de Leitura Bíblica";
+  const pal  = PDF_THEMES[theme] ?? PDF_THEMES.classico;
+  const name = planName || "Plano de Leitura Bíblica";
   const nameSafe = sa(name);
 
+  // Layout dinâmico baseado nas opções
+  const cols = columns === 1 ? 1 : 2;
+  const cgap = cols === 1 ? 0 : CGAP;
+  const cw   = (PW - ML - MR - cgap * (cols - 1)) / cols;
+  const rowH = rowSpacing === "spacious" ? 11 : 7.5;
+  const bodyY0P1 = HDR_H + (showStats ? STAT_H : 0) + CHDR_H;
+  const bodyY0PN = HDR_H + CHDR_H;
+
+  const L = {
+    cols, cgap, cw, rowH, bodyY0P1, bodyY0PN,
+    colX: (c) => ML + c * (cw + cgap),
+  };
+
+  // Monta lista de itens
   const items = [];
   for (let i = 0; i < days.length; i++) {
-    if (i % 7 === 0) items.push({ type: "week", num: Math.floor(i / 7) + 1 });
+    if (weekDividers && i % 7 === 0) items.push({ type: "week", num: Math.floor(i / 7) + 1 });
     items.push({ type: "day", day: days[i], idx: i });
   }
 
-  const totalPages = calcTotalPages(items);
+  const totalPages = calcTotalPages(items, L);
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   doc.setFont("helvetica");
 
   let pageNum = 1, col = 0;
-  let bodyY0 = BODY_Y0_P1;
+  let bodyY0 = L.bodyY0P1;
   let curY   = bodyY0;
   let firstDay = days[0]?.dayNumber ?? 1;
   let lastDay  = firstDay;
   let firstDaySet = false;
   let col1HeaderDrawn = false;
 
-  const chdrYForPage = () => pageNum === 1 ? HDR_H + STAT_H : HDR_H;
+  const chdrYForPage = () => pageNum === 1 ? HDR_H + (showStats ? STAT_H : 0) : HDR_H;
 
   const startPage = () => {
     drawPageHeader(doc, name, pageNum, totalPages, pal);
-    if (pageNum === 1) drawStatsBar(doc, days, chaptersPerDay, totalChapters, pal);
-    drawColHeader(doc, chdrYForPage(), 0, pal);
+    if (pageNum === 1 && showStats) drawStatsBar(doc, days, chaptersPerDay, totalChapters, pal);
+    drawColHeader(doc, chdrYForPage(), 0, pal, L);
     col1HeaderDrawn = false;
   };
 
@@ -330,15 +338,15 @@ export async function exportToPDF({ planName, days, chaptersPerDay, totalChapter
   startPage();
 
   for (const item of items) {
-    const h = item.type === "week" ? WEEK_H : ROW_H;
+    const h = item.type === "week" ? WEEK_H : L.rowH;
 
     if (curY + h > BODY_Y1) {
-      if (col === 0) {
-        col = 1;
+      if (col < L.cols - 1) {
+        col++;
         curY = bodyY0;
         if (!col1HeaderDrawn) {
-          drawColHeader(doc, chdrYForPage(), 1, pal);
-          drawColDivider(doc, chdrYForPage() + CHDR_H, pal);
+          drawColHeader(doc, chdrYForPage(), col, pal, L);
+          if (col === 1) drawColDivider(doc, chdrYForPage() + CHDR_H, pal, L);
           col1HeaderDrawn = true;
         }
       } else {
@@ -346,7 +354,7 @@ export async function exportToPDF({ planName, days, chaptersPerDay, totalChapter
         doc.addPage();
         pageNum++;
         col = 0;
-        bodyY0 = BODY_Y0_PN;
+        bodyY0 = L.bodyY0PN;
         curY   = bodyY0;
         firstDaySet = false;
         col1HeaderDrawn = false;
@@ -354,14 +362,14 @@ export async function exportToPDF({ planName, days, chaptersPerDay, totalChapter
       }
     }
 
-    const x = colX(col);
+    const x = L.colX(col);
 
     if (item.type === "week") {
-      drawWeekRow(doc, x, curY, item.num, pal);
+      drawWeekRow(doc, x, curY, item.num, pal, L);
     } else {
       if (!firstDaySet) { firstDay = item.day.dayNumber; firstDaySet = true; }
       lastDay = item.day.dayNumber;
-      drawDayRow(doc, x, curY, item.day, item.idx % 2 === 0, pal);
+      drawDayRow(doc, x, curY, item.day, item.idx % 2 === 0, pal, L);
     }
 
     curY += h;
