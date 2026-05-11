@@ -3,7 +3,7 @@ import Link from "next/link";
 const faqs = [
   {
     q: "O Plano Bíblico é gratuito?",
-    a: "Sim, completamente gratuito. Não há anúncios, não há planos pagos, não há cadastro. Você cria seu plano, baixa o PDF e pronto — sem custo algum.",
+    a: "Sim, completamente gratuito. Não há planos pagos, não há cadastro. Você cria seu plano, baixa o PDF e pronto — sem custo algum.",
   },
   {
     q: "Preciso criar uma conta para usar?",

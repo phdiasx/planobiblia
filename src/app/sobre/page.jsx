@@ -54,8 +54,8 @@ export default function SobrePage() {
             <hr className="sb-rule-sm" />
 
             <p>
-              O <strong>Plano Bíblico</strong> é gratuito. Não tem anúncios, não tem cadastro,
-              não coleta dados. Nunca terá. É um projeto pessoal que decidi tornar público
+              O <strong>Plano Bíblico</strong> é gratuito. Não tem cadastro,
+              não coleta dados. É um projeto pessoal que decidi tornar público
               porque achei que poderia ser útil para outras pessoas — e, ao que parece, é.
             </p>
 

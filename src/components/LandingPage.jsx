@@ -172,7 +172,7 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
         <div className="lp-hero-orb lp-orb-1" aria-hidden="true" />
         <div className="lp-hero-orb lp-orb-2" aria-hidden="true" />
         <div className="lp-container lp-hero-center">
-          <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro · sem anúncios</p>
+          <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro</p>
           <h1 className="lp-h1 lp-h1-center lp-anim-1">
             Seu plano de leitura<br />
             <span className="lp-h1-accent">bíblica, do seu jeito.</span>
@@ -278,7 +278,7 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
             <div className="lp-cta-orb" aria-hidden="true" />
             <p className="lp-section-eye" style={{ color: "rgba(255,255,255,0.7)" }}>Pronto para começar?</p>
             <h2 className="lp-cta-h2">A Bíblia inteira.<br />No seu tempo.</h2>
-            <p className="lp-cta-sub">Crie seu plano em menos de 2 minutos. Gratuito, sem cadastro, sem anúncios.</p>
+            <p className="lp-cta-sub">Crie seu plano em menos de 2 minutos. Gratuito, sem cadastro.</p>
             <button className="lp-cta-btn" onClick={onStart}>
               Criar meu plano agora <ArrowRight />
             </button>

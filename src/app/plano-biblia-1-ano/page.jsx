@@ -99,7 +99,7 @@ export default function PlanoBiblia1AnoPage() {
               para imprimir e usar no dia a dia.
             </p>
             <p>
-              Não precisa de cadastro, não tem anúncios, não coleta dados. É só você e a Palavra.
+              Não precisa de cadastro, não coleta dados. É só você e a Palavra.
             </p>
 
           </div>

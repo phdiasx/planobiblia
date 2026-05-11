@@ -10,7 +10,7 @@ const faqSchema = {
       name: "O Plano Bíblico é gratuito?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Sim, completamente gratuito. Sem anúncios, sem cadastro, sem coleta de dados. Crie seu plano e baixe o PDF sem custo algum.",
+        text: "Sim, completamente gratuito. Sem cadastro, sem coleta de dados. Crie seu plano e baixe o PDF sem custo algum.",
       },
     },
     {
@@ -94,7 +94,7 @@ export default function Home() {
             <div className="seo-faq-list">
               <div className="seo-faq-item">
                 <h3>O serviço é gratuito?</h3>
-                <p>Sim. Não há anúncios, não há planos pagos, não há cadastro de nenhuma forma.</p>
+                <p>Sim. Não há planos pagos, não há cadastro de nenhuma forma.</p>
               </div>
               <div className="seo-faq-item">
                 <h3>Posso escolher apenas alguns livros?</h3>
