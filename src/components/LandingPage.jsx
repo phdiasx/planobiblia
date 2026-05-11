@@ -46,28 +46,36 @@ function BookIcon({ size = 20 }) {
   );
 }
 
+function ArrowRight() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  );
+}
+
 const STEPS = [
   {
     num: "01",
-    title: "Escolha os livros",
-    desc: "Selecione qualquer combinação — de um único livro a toda a Bíblia. Protestante (66) ou Católica (73 livros).",
+    title: "Selecione os livros",
+    desc: "Qualquer combinação: de um único livro a toda a Bíblia. Protestante (66) ou Católica (73). Na ordem que você quiser.",
   },
   {
     num: "02",
-    title: "Configure o ritmo",
-    desc: "Defina quantos capítulos ler por dia, a data de início e personalize dias específicos da semana.",
+    title: "Defina o ritmo",
+    desc: "Escolha quantos capítulos ler por dia. Configure a data de início e ajuste dias específicos da semana ao seu estilo de vida.",
   },
   {
     num: "03",
     title: "Baixe o PDF",
-    desc: "Gere um cronograma bonito com 4 modelos visuais, pronto para imprimir e usar no dia a dia.",
+    desc: "Gere um cronograma organizado com data, leitura e checkbox por dia. 4 modelos visuais. Pronto para imprimir.",
   },
 ];
 
 const FEATURES = [
   {
-    title: "Você escolhe o que ler",
-    desc: "Nenhum plano engessado. Selecione exatamente os livros que quer percorrer — desde um Evangelho até toda a Bíblia, na ordem que preferir.",
+    title: "Escolha exatamente o que ler",
+    desc: "Selecione livros individuais, grupos ou a Bíblia completa. Defina até o intervalo de capítulos por livro. Sem plano engessado.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
         <path d="M2 6c0-1.1.9-2 2-2h7a2 2 0 0 1 2 2v13H4a2 2 0 0 1-2-2V6Z"/>
@@ -77,8 +85,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "Você define o ritmo",
-    desc: "De 1 capítulo a 10 ou mais por dia. Configure cada dia da semana individualmente. O plano se molda à sua rotina.",
+    title: "Ritmo que cabe na sua rotina",
+    desc: "De 1 a 10 capítulos por dia. Configure dias diferentes para finais de semana. O plano calcula o cronograma completo automaticamente.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
         <line x1="4" y1="6" x2="20" y2="6"/>
@@ -91,8 +99,8 @@ const FEATURES = [
     ),
   },
   {
-    title: "PDF pronto para imprimir",
-    desc: "4 modelos visuais diferentes. Cada página traz a data, os capítulos e um checkbox para marcar o progresso diário.",
+    title: "PDF para imprimir e usar",
+    desc: "4 modelos visuais. Cada dia tem data, leitura e checkbox. Compartilhe o link ou baixe o PDF — seu plano aonde você estiver.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="26" height="26">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z"/>
@@ -125,14 +133,6 @@ const MOCKUP_ROWS = [
   { day: "04", date: "04/06", reading: "Gênesis 10–12" },
   { day: "05", date: "05/06", reading: "Gênesis 13–15" },
 ];
-
-function ArrowRight() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5 12h14M12 5l7 7-7 7"/>
-    </svg>
-  );
-}
 
 export default function LandingPage({ onStart, dark, onToggleDark }) {
   const [heroVisible, setHeroVisible] = useState(false);
@@ -174,15 +174,14 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
         <div className="lp-container lp-hero-inner">
 
           <div className="lp-hero-text">
-            <p className="lp-eyebrow lp-anim-0">por um engenheiro de dados apaixonado por teologia</p>
+            <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro · sem anúncios</p>
             <h1 className="lp-h1 lp-anim-1">
-              A ferramenta que<br />
-              <span className="lp-h1-accent">eu precisava<br />não existia.</span>
+              Seu plano de leitura<br />
+              <span className="lp-h1-accent">bíblica,<br />do seu jeito.</span>
             </h1>
             <p className="lp-hero-desc lp-anim-2">
-              Escolha os livros, defina seu ritmo e gere um PDF organizado para
-              imprimir. Sem planos prontos que não se encaixam na sua rotina.
-              Grátis, sem cadastro.
+              Monte um cronograma com os livros e o ritmo que você escolher.
+              Gere um PDF pronto para imprimir. Em minutos, sem cadastro.
             </p>
             <div className="lp-hero-btns lp-anim-3">
               <button className="lp-btn-primary" onClick={onStart}>
@@ -236,7 +235,7 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
           <div className="lp-steps-wrap">
             <div className="lp-steps-label lp-child">
               <p className="lp-section-eye">Como funciona</p>
-              <h2 className="lp-h2">Simples.<br />Direto.</h2>
+              <h2 className="lp-h2">3 passos.<br />Pronto.</h2>
             </div>
             <div className="lp-steps-list">
               {STEPS.map((s, i) => (
@@ -254,13 +253,13 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
       </section>
 
       {/* ── Features ── */}
-      <section className="lp-section lp-section-alt" ref={featuresRef}>
+      <section className="lp-section" ref={featuresRef}>
         <div className={`lp-container ${featuresVisible ? "lp-in" : ""}`}>
           <div className="lp-section-header lp-child">
-            <p className="lp-section-eye">Diferencial</p>
-            <h2 className="lp-h2">Personalização total.</h2>
+            <p className="lp-section-eye">Diferenciais</p>
+            <h2 className="lp-h2">Personalização total.<br />Sem compromisso.</h2>
             <p className="lp-section-sub">
-              Não existe um plano para todos. Cada pessoa lê de um jeito — o app se adapta à sua rotina.
+              Cada leitura é diferente. O app se adapta — você define o que ler, quando e em qual ritmo.
             </p>
           </div>
           <div className="lp-features-grid">
@@ -276,13 +275,13 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
       </section>
 
       {/* ── Plans ── */}
-      <section className="lp-section" ref={plansRef}>
+      <section className="lp-section lp-section-alt" ref={plansRef}>
         <div className={`lp-container ${plansVisible ? "lp-in" : ""}`}>
           <div className="lp-section-header lp-child">
             <p className="lp-section-eye">Planos prontos</p>
-            <h2 className="lp-h2">Ou comece com um preset.</h2>
+            <h2 className="lp-h2">Comece agora com um preset.</h2>
             <p className="lp-section-sub">
-              Escolha um plano pronto e ajuste à sua maneira — ou monte do zero selecionando os livros que quiser.
+              8 planos pré-configurados para você escolher. Clique em qualquer um e ajuste como quiser.
             </p>
           </div>
           <div className="lp-plans-grid">
@@ -305,23 +304,6 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
         </div>
       </section>
 
-      {/* ── Author note ── */}
-      <section className="lp-author-section">
-        <div className="lp-container">
-          <div className="lp-author-card">
-            <p className="lp-author-quote">
-              "Procurei uma ferramenta que me deixasse escolher os livros,
-              definir o ritmo e gerar um PDF. Não encontrei. Então construí."
-            </p>
-            <div className="lp-author-info">
-              <span className="lp-author-name">Paulo Henrique Dias</span>
-              <span className="lp-author-role">Engenheiro de dados · apaixonado por teologia</span>
-            </div>
-            <Link href="/sobre" className="lp-author-link">Ler mais sobre o projeto →</Link>
-          </div>
-        </div>
-      </section>
-
       {/* ── CTA ── */}
       <section className="lp-cta-section" ref={ctaRef}>
         <div className={`lp-container ${ctaVisible ? "lp-in" : ""}`}>
@@ -329,7 +311,7 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
             <div className="lp-cta-orb" aria-hidden="true" />
             <p className="lp-section-eye" style={{ color: "rgba(255,255,255,0.7)" }}>Pronto para começar?</p>
             <h2 className="lp-cta-h2">A Bíblia inteira.<br />No seu tempo.</h2>
-            <p className="lp-cta-sub">Crie seu plano em menos de 2 minutos. Grátis, sem cadastro.</p>
+            <p className="lp-cta-sub">Crie seu plano em menos de 2 minutos. Gratuito, sem cadastro, sem anúncios.</p>
             <button className="lp-cta-btn" onClick={onStart}>
               Criar meu plano agora <ArrowRight />
             </button>
