@@ -1,10 +1,10 @@
+// chapterRanges: { [bookId]: number[] } — array de caps selecionados, ou undefined = todos
 export function generatePlan({ selectedBooks, chaptersPerDay, startDate, dayOverrides = {}, chapterRanges = {} }) {
   const allChapters = [];
   for (const book of selectedBooks) {
-    const range = chapterRanges[book.id];
-    const from = range?.start ?? 1;
-    const to = range?.end ?? book.chapters;
-    for (let ch = from; ch <= to; ch++) {
+    const sel = chapterRanges[book.id];
+    const chapters = sel ?? Array.from({ length: book.chapters }, (_, i) => i + 1);
+    for (const ch of chapters) {
       allChapters.push({ bookName: book.name, abbr: book.abbr, chapter: ch });
     }
   }
@@ -17,13 +17,10 @@ export function generatePlan({ selectedBooks, chaptersPerDay, startDate, dayOver
   while (i < allChapters.length) {
     const date = new Date(start);
     date.setDate(start.getDate() + dayIndex);
-
     const dow = date.getDay();
     const caps = dayOverrides[dow] !== undefined ? dayOverrides[dow] : chaptersPerDay;
-
     const readings = allChapters.slice(i, i + caps);
     days.push({ date, dayNumber: days.length + 1, readings });
-
     i += caps;
     dayIndex++;
   }

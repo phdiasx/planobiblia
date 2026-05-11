@@ -32,21 +32,22 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
   const hasCustomRanges = Object.keys(chapterRanges).length > 0;
 
   const totalChapters = selectedBooks.reduce((s, b) => {
-    const r = chapterRanges[b.id];
-    return s + ((r?.end ?? b.chapters) - (r?.start ?? 1) + 1);
+    const sel = chapterRanges[b.id];
+    return s + (sel ? sel.length : b.chapters);
   }, 0);
 
-  const setRange = (bookId, field, raw) => {
+  const toggleChapter = (bookId, chapter) => {
     const book = BOOKS.find(b => b.id === bookId);
-    const cur = chapterRanges[bookId] || { start: 1, end: book.chapters };
-    let val = Math.max(1, Math.min(book.chapters, Number(raw) || 1));
-    const next = { ...cur, [field]: val };
-    if (next.start > next.end) {
-      if (field === "start") next.end = next.start;
-      else next.start = next.end;
+    const all = Array.from({ length: book.chapters }, (_, i) => i + 1);
+    const cur = chapterRanges[bookId] ?? all;
+    let next;
+    if (cur.includes(chapter)) {
+      next = cur.filter(c => c !== chapter);
+      if (next.length === 0) return;
+    } else {
+      next = [...cur, chapter].sort((a, b) => a - b);
     }
-    const isDefault = next.start === 1 && next.end === book.chapters;
-    if (isDefault) {
+    if (next.length === book.chapters) {
       const ranges = { ...chapterRanges };
       delete ranges[bookId];
       onChange({ ...config, chapterRanges: ranges });
@@ -222,42 +223,34 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
         {showChapterRanges && (
           <div className="advanced-body">
             <p className="advanced-hint">
-              Defina o intervalo de capítulos a ler em cada livro. Por padrão, todos os capítulos são incluídos.
+              Clique nos capítulos para incluir ou excluir. Por padrão, todos são incluídos.
             </p>
             <div className="chapter-ranges-list">
               {selectedBooks.map(book => {
-                const r = chapterRanges[book.id];
-                const from = r?.start ?? 1;
-                const to = r?.end ?? book.chapters;
-                const isCustom = !!r;
+                const sel = chapterRanges[book.id];
+                const included = sel ?? Array.from({ length: book.chapters }, (_, i) => i + 1);
+                const isCustom = !!sel;
                 return (
                   <div key={book.id} className={`chapter-range-row ${isCustom ? "active" : ""}`}>
-                    <span className="chapter-range-book">
-                      {book.name}
-                      <span className="chapter-range-total">{book.chapters} caps</span>
-                    </span>
-                    <div className="chapter-range-inputs">
-                      <label>do</label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={book.chapters}
-                        value={from}
-                        disabled={book.chapters === 1}
-                        onChange={e => setRange(book.id, "start", e.target.value)}
-                        className="chapter-range-input"
-                      />
-                      <label>até</label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={book.chapters}
-                        value={to}
-                        disabled={book.chapters === 1}
-                        onChange={e => setRange(book.id, "end", e.target.value)}
-                        className="chapter-range-input"
-                      />
+                    <div className="chapter-range-header">
+                      <span className="chapter-range-book">{book.name}</span>
+                      <span className="chapter-range-count">{included.length}/{book.chapters}</span>
                     </div>
+                    {book.chapters === 1 ? (
+                      <span className="chapter-range-single">Livro de 1 capítulo</span>
+                    ) : (
+                      <div className="ch-grid">
+                        {Array.from({ length: book.chapters }, (_, i) => i + 1).map(ch => (
+                          <button
+                            key={ch}
+                            className={`ch-chip ${included.includes(ch) ? "on" : "off"}`}
+                            onClick={() => toggleChapter(book.id, ch)}
+                          >
+                            {ch}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 );
               })}

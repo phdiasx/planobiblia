@@ -80,7 +80,36 @@ export const PDF_THEMES = {
   },
 };
 
-// ─── Helpers ──────────────────────────────────────────────────
+// ─── Paleta personalizada a partir de 2 cores hex ────────────
+function hexToRgb(hex) {
+  const h = hex.replace("#", "");
+  return [parseInt(h.slice(0,2),16), parseInt(h.slice(2,4),16), parseInt(h.slice(4,6),16)];
+}
+function lighten(rgb, t) { return rgb.map(c => Math.min(255, Math.round(c + (255-c)*t))); }
+function darken(rgb, t)  { return rgb.map(c => Math.max(0, Math.round(c*(1-t)))); }
+
+export function buildCustomPalette(primaryHex, accentHex) {
+  const hdr = hexToRgb(primaryHex);
+  const acc = hexToRgb(accentHex);
+  return {
+    label: "Personalizado",
+    swatches: [primaryHex, accentHex, "#f5f5f5"],
+    hdr,
+    hdr2:   lighten(hdr, 0.30),
+    hdrL:   lighten(hdr, 0.75),
+    hdrXL:  lighten(hdr, 0.95),
+    hdrSub: lighten(hdr, 0.52),
+    acc,
+    drk:    darken(hdr, 0.40),
+    mid:    lighten(darken(hdr, 0.05), 0.42),
+    lit:    lighten(hdr, 0.55),
+    bdr:    lighten(hdr, 0.82),
+    evn:    lighten(hdr, 0.97),
+    wkg:    lighten(hdr, 0.92),
+  };
+}
+
+// ─── Helpers internos ────────────────────────────────────────
 function fi(doc, arr) { doc.setFillColor(...arr); }
 function dr(doc, arr) { doc.setDrawColor(...arr); }
 function tx(doc, arr) { doc.setTextColor(...arr); }
@@ -92,8 +121,7 @@ function calcTotalPages(items, L) {
   for (const item of items) {
     const h = item.type === "week" ? WEEK_H : L.rowH;
     const bodyY0 = page === 1 ? L.bodyY0P1 : L.bodyY0PN;
-    const bh = BODY_Y1 - bodyY0;
-    if (y + h > bh) {
+    if (y + h > BODY_Y1 - bodyY0) {
       y = 0; col++;
       if (col >= L.cols) { col = 0; page++; }
     }
@@ -178,9 +206,9 @@ function drawColHeader(doc, y, c, pal, L) {
   tx(doc, pal.hdr);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6);
-  doc.text("DIA",     x + 6,  y + 4.7);
-  doc.text("DATA",    x + 19, y + 4.7);
-  doc.text("LEITURA", x + 34, y + 4.7);
+  doc.text("DIA", x + 6, y + 4.7);
+  if (L.showDates) doc.text("DATA", x + 19, y + 4.7);
+  doc.text("LEITURA", L.showDates ? x + 34 : x + 22, y + 4.7);
 }
 
 // ─── Divisória entre colunas ─────────────────────────────────
@@ -212,9 +240,8 @@ function drawWeekRow(doc, x, y, num, pal, L) {
   dr(doc, pal.hdrL);
   doc.setLineWidth(0.2);
   doc.line(x, y + WEEK_H, x + L.cw, y + WEEK_H);
-
   const mid = y + WEEK_H / 2;
-  const lx1 = x + 4,            lx2 = x + L.cw / 2 - 14;
+  const lx1 = x + 4,             lx2 = x + L.cw / 2 - 14;
   const lx3 = x + L.cw / 2 + 14, lx4 = x + L.cw - 4;
   dr(doc, pal.hdr2);
   doc.setLineWidth(0.3);
@@ -249,29 +276,31 @@ function drawDayRow(doc, x, y, day, isEven, pal, L) {
   doc.setFontSize(7);
   doc.text(String(day.dayNumber), x + 16, vc, { align: "right" });
 
-  tx(doc, pal.mid);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.8);
-  const dt = day.date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-  doc.text(dt, x + 18, vc);
+  if (L.showDates) {
+    tx(doc, pal.mid);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6.8);
+    const dt = day.date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+    doc.text(dt, x + 18, vc);
+    tx(doc, pal.lit);
+    doc.setFontSize(5.5);
+    const wd = day.date.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "").slice(0, 3);
+    doc.text(wd, x + 18, vs);
+  }
 
-  tx(doc, pal.lit);
-  doc.setFontSize(5.5);
-  const wd = day.date.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "").slice(0, 3);
-  doc.text(wd, x + 18, vs);
-
+  const readX = L.showDates ? x + 34 : x + 20;
+  const maxW  = L.cw - (L.showDates ? 35 : 22);
   tx(doc, pal.drk);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.8);
   const txt = formatReadings(day.readings, { useAbbr: true });
-  const maxW = L.cw - 35;
   const lines = doc.splitTextToSize(txt, maxW);
-  doc.text(lines[0] || "", x + 34, vc);
+  doc.text(lines[0] || "", readX, vc);
   if (lines.length > 1) {
     tx(doc, pal.mid);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(5.8);
-    doc.text(lines[1], x + 34, vs);
+    doc.text(lines[1], readX, vs);
   }
 }
 
@@ -282,17 +311,18 @@ export async function exportToPDF({
   chaptersPerDay,
   totalChapters,
   theme         = "classico",
+  customPalette = null,
   columns       = 2,
   rowSpacing    = "normal",
   weekDividers  = true,
   showStats     = true,
+  showDates     = true,
 }) {
   const { jsPDF } = await import("jspdf");
-  const pal  = PDF_THEMES[theme] ?? PDF_THEMES.classico;
+  const pal  = customPalette ?? (PDF_THEMES[theme] ?? PDF_THEMES.classico);
   const name = planName || "Plano de Leitura Bíblica";
   const nameSafe = sa(name);
 
-  // Layout dinâmico baseado nas opções
   const cols = columns === 1 ? 1 : 2;
   const cgap = cols === 1 ? 0 : CGAP;
   const cw   = (PW - ML - MR - cgap * (cols - 1)) / cols;
@@ -301,11 +331,10 @@ export async function exportToPDF({
   const bodyY0PN = HDR_H + CHDR_H;
 
   const L = {
-    cols, cgap, cw, rowH, bodyY0P1, bodyY0PN,
+    cols, cgap, cw, rowH, bodyY0P1, bodyY0PN, showDates,
     colX: (c) => ML + c * (cw + cgap),
   };
 
-  // Monta lista de itens
   const items = [];
   for (let i = 0; i < days.length; i++) {
     if (weekDividers && i % 7 === 0) items.push({ type: "week", num: Math.floor(i / 7) + 1 });

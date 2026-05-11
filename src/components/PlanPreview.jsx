@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatDate, formatReadings } from "@/utils/planGenerator";
-import { exportToPDF, PDF_THEMES } from "@/utils/pdfGenerator";
+import { exportToPDF, PDF_THEMES, buildCustomPalette } from "@/utils/pdfGenerator";
 import { BOOKS } from "@/data/bible";
 
 const PAGE_SIZE = 60;
@@ -18,6 +18,9 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [rowSpacing, setRowSpacing] = useState("normal");
   const [weekDividers, setWeekDividers] = useState(true);
   const [showStats, setShowStats] = useState(true);
+  const [showDates, setShowDates] = useState(true);
+  const [customColor1, setCustomColor1] = useState("#1B4B82");
+  const [customColor2, setCustomColor2] = useState("#C49A1C");
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(shareUrl || window.location.href);
@@ -32,23 +35,28 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const totalChapters = selectedIds.reduce((s, id) => {
     const book = BOOKS.find(b => b.id === id);
     if (!book) return s;
-    const r = chapterRanges[id];
-    return s + ((r?.end ?? book.chapters) - (r?.start ?? 1) + 1);
+    const sel = chapterRanges[id];
+    return s + (sel ? sel.length : book.chapters);
   }, 0);
 
   const handleExport = async () => {
     setExporting(true);
     try {
+      const customPalette = theme === "personalizado"
+        ? buildCustomPalette(customColor1, customColor2)
+        : null;
       await exportToPDF({
         planName: config.planName || "Plano de Leitura Bíblica",
         days,
         chaptersPerDay: config.chaptersPerDay,
         totalChapters,
-        theme,
+        theme: theme === "personalizado" ? "classico" : theme,
+        customPalette,
         columns,
         rowSpacing,
         weekDividers,
         showStats,
+        showDates,
       });
       if (typeof window !== "undefined" && window.gtag) {
         window.gtag("event", "download_pdf", {
@@ -104,7 +112,30 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
                   <span className="pdf-theme-name">{t.label}</span>
                 </button>
               ))}
+              <button
+                className={`pdf-theme-card ${theme === "personalizado" ? "active" : ""}`}
+                onClick={() => setTheme("personalizado")}
+              >
+                <div className="pdf-theme-swatches">
+                  <span className="pdf-swatch" style={{ background: customColor1 }} />
+                  <span className="pdf-swatch" style={{ background: customColor2 }} />
+                  <span className="pdf-swatch" style={{ background: "#f5f5f5" }} />
+                </div>
+                <span className="pdf-theme-name">Personalizado</span>
+              </button>
             </div>
+            {theme === "personalizado" && (
+              <div className="pdf-color-pickers">
+                <label className="pdf-color-field">
+                  <span>Cor principal</span>
+                  <input type="color" value={customColor1} onChange={e => setCustomColor1(e.target.value)} />
+                </label>
+                <label className="pdf-color-field">
+                  <span>Destaque</span>
+                  <input type="color" value={customColor2} onChange={e => setCustomColor2(e.target.value)} />
+                </label>
+              </div>
+            )}
           </div>
 
           {/* Colunas */}
@@ -149,6 +180,15 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
           <div className="pdf-opt-group">
             <span className="pdf-opt-label">Extras</span>
             <div className="pdf-opt-toggles">
+              <label className="pdf-toggle">
+                <input
+                  type="checkbox"
+                  checked={showDates}
+                  onChange={e => setShowDates(e.target.checked)}
+                />
+                <span className="pdf-toggle-box" />
+                <span>Mostrar datas</span>
+              </label>
               <label className="pdf-toggle">
                 <input
                   type="checkbox"
