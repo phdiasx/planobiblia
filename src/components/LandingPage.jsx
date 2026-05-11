@@ -175,7 +175,7 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
           <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro</p>
           <h1 className="lp-h1 lp-h1-center lp-anim-1">
             Seu plano de leitura<br />
-            <span className="lp-h1-accent">bíblica, do seu jeito.</span>
+            <span className="lp-h1-accent">bíblica, personalizado.</span>
           </h1>
           <p className="lp-hero-desc lp-hero-desc-center lp-anim-2">
             Escolha os livros, defina o ritmo e gere um PDF para imprimir.
