@@ -104,6 +104,7 @@ export default function RootLayout({ children }) {
             document.documentElement.setAttribute('data-theme', t);
           } catch(e) {}
         `}} />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9375608574769039" crossOrigin="anonymous" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-J0FQGYN4F6" />
         <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
