@@ -270,6 +270,7 @@ export default function App() {
     chaptersPerDay: 3,
     startDate: today,
     dayOverrides: {},
+    chapterRanges: {},
   });
   const [dark, setDark] = useState(false);
   const [edition, setEdition] = useState("protestante");
@@ -338,6 +339,7 @@ export default function App() {
       chaptersPerDay: config.chaptersPerDay,
       startDate: config.startDate,
       dayOverrides: config.dayOverrides || {},
+      chapterRanges: config.chapterRanges || {},
     });
   }, [selectedBooks, config.chaptersPerDay, config.startDate, config.dayOverrides]);
 

@@ -1,7 +1,10 @@
-export function generatePlan({ selectedBooks, chaptersPerDay, startDate, dayOverrides = {} }) {
+export function generatePlan({ selectedBooks, chaptersPerDay, startDate, dayOverrides = {}, chapterRanges = {} }) {
   const allChapters = [];
   for (const book of selectedBooks) {
-    for (let ch = 1; ch <= book.chapters; ch++) {
+    const range = chapterRanges[book.id];
+    const from = range?.start ?? 1;
+    const to = range?.end ?? book.chapters;
+    for (let ch = from; ch <= to; ch++) {
       allChapters.push({ bookName: book.name, abbr: book.abbr, chapter: ch });
     }
   }

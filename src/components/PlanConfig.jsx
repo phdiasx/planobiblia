@@ -25,9 +25,35 @@ const DAYS = [
 
 export default function PlanConfig({ config, onChange, selectedIds }) {
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [showChapterRanges, setShowChapterRanges] = useState(false);
 
-  const totalChapters = BOOKS.filter(b => selectedIds.includes(b.id))
-    .reduce((s, b) => s + b.chapters, 0);
+  const chapterRanges = config.chapterRanges || {};
+  const selectedBooks = BOOKS.filter(b => selectedIds.includes(b.id));
+  const hasCustomRanges = Object.keys(chapterRanges).length > 0;
+
+  const totalChapters = selectedBooks.reduce((s, b) => {
+    const r = chapterRanges[b.id];
+    return s + ((r?.end ?? b.chapters) - (r?.start ?? 1) + 1);
+  }, 0);
+
+  const setRange = (bookId, field, raw) => {
+    const book = BOOKS.find(b => b.id === bookId);
+    const cur = chapterRanges[bookId] || { start: 1, end: book.chapters };
+    let val = Math.max(1, Math.min(book.chapters, Number(raw) || 1));
+    const next = { ...cur, [field]: val };
+    if (next.start > next.end) {
+      if (field === "start") next.end = next.start;
+      else next.start = next.end;
+    }
+    const isDefault = next.start === 1 && next.end === book.chapters;
+    if (isDefault) {
+      const ranges = { ...chapterRanges };
+      delete ranges[bookId];
+      onChange({ ...config, chapterRanges: ranges });
+    } else {
+      onChange({ ...config, chapterRanges: { ...chapterRanges, [bookId]: next } });
+    }
+  };
 
   const overrides = config.dayOverrides || {};
 
@@ -173,6 +199,75 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
                 onClick={() => onChange({ ...config, dayOverrides: {} })}
               >
                 Remover personalizações
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="advanced-section">
+        <button
+          className={`advanced-toggle ${showChapterRanges ? "open" : ""} ${hasCustomRanges ? "has-overrides" : ""}`}
+          onClick={() => setShowChapterRanges(v => !v)}
+        >
+          <span>Capítulos por livro</span>
+          <span className="advanced-toggle-meta">
+            {hasCustomRanges && !showChapterRanges && `${Object.keys(chapterRanges).length} livro${Object.keys(chapterRanges).length > 1 ? "s" : ""} personalizado${Object.keys(chapterRanges).length > 1 ? "s" : ""}`}
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="advanced-chevron">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </span>
+        </button>
+
+        {showChapterRanges && (
+          <div className="advanced-body">
+            <p className="advanced-hint">
+              Defina o intervalo de capítulos a ler em cada livro. Por padrão, todos os capítulos são incluídos.
+            </p>
+            <div className="chapter-ranges-list">
+              {selectedBooks.map(book => {
+                const r = chapterRanges[book.id];
+                const from = r?.start ?? 1;
+                const to = r?.end ?? book.chapters;
+                const isCustom = !!r;
+                return (
+                  <div key={book.id} className={`chapter-range-row ${isCustom ? "active" : ""}`}>
+                    <span className="chapter-range-book">
+                      {book.name}
+                      <span className="chapter-range-total">{book.chapters} caps</span>
+                    </span>
+                    <div className="chapter-range-inputs">
+                      <label>do</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={book.chapters}
+                        value={from}
+                        disabled={book.chapters === 1}
+                        onChange={e => setRange(book.id, "start", e.target.value)}
+                        className="chapter-range-input"
+                      />
+                      <label>até</label>
+                      <input
+                        type="number"
+                        min={1}
+                        max={book.chapters}
+                        value={to}
+                        disabled={book.chapters === 1}
+                        onChange={e => setRange(book.id, "end", e.target.value)}
+                        className="chapter-range-input"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {hasCustomRanges && (
+              <button
+                className="advanced-clear"
+                onClick={() => onChange({ ...config, chapterRanges: {} })}
+              >
+                Restaurar todos os capítulos
               </button>
             )}
           </div>

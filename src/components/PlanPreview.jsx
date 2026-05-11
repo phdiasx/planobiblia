@@ -30,8 +30,13 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const totalPages = Math.ceil(days.length / PAGE_SIZE);
   const visible = days.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
-  const totalChapters = BOOKS.filter(b => selectedIds.includes(b.id))
-    .reduce((s, b) => s + b.chapters, 0);
+  const chapterRanges = config.chapterRanges || {};
+  const totalChapters = selectedIds.reduce((s, id) => {
+    const book = BOOKS.find(b => b.id === id);
+    if (!book) return s;
+    const r = chapterRanges[id];
+    return s + ((r?.end ?? book.chapters) - (r?.start ?? 1) + 1);
+  }, 0);
 
   const handleExport = async () => {
     setExporting(true);
