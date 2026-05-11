@@ -273,24 +273,19 @@ export default function PlanConfig({ config, onChange, selectedIds }) {
             <span className="summary-value">{totalChapters}</span>
             <span className="summary-label">capítulos</span>
           </div>
-          <div className="summary-divider" />
           <div className="summary-item">
             <span className="summary-value">{totalDays}</span>
             <span className="summary-label">dias</span>
           </div>
-          <div className="summary-divider" />
           <div className="summary-item">
             <span className="summary-value">{months}</span>
             <span className="summary-label">{Math.round(totalDays / 30) === 1 ? "mês" : "meses"}</span>
           </div>
           {endDate && (
-            <>
-              <div className="summary-divider" />
-              <div className="summary-item">
-                <span className="summary-value">{endDate}</span>
-                <span className="summary-label">conclusão</span>
-              </div>
-            </>
+            <div className="summary-item">
+              <span className="summary-value">{endDate}</span>
+              <span className="summary-label">conclusão</span>
+            </div>
           )}
         </div>
       )}
