@@ -171,61 +171,28 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
       <section className={`lp-hero ${heroVisible ? "lp-hero-in" : ""}`}>
         <div className="lp-hero-orb lp-orb-1" aria-hidden="true" />
         <div className="lp-hero-orb lp-orb-2" aria-hidden="true" />
-        <div className="lp-container lp-hero-inner">
-
-          <div className="lp-hero-text">
-            <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro · sem anúncios</p>
-            <h1 className="lp-h1 lp-anim-1">
-              Seu plano de leitura<br />
-              <span className="lp-h1-accent">bíblica,<br />do seu jeito.</span>
-            </h1>
-            <p className="lp-hero-desc lp-anim-2">
-              Monte um cronograma com os livros e o ritmo que você escolher.
-              Gere um PDF pronto para imprimir. Em minutos, sem cadastro.
-            </p>
-            <div className="lp-hero-btns lp-anim-3">
-              <button className="lp-btn-primary" onClick={onStart}>
-                Criar meu plano <ArrowRight />
-              </button>
-              <a href="#como-funciona" className="lp-btn-ghost">Como funciona</a>
-            </div>
-            <div className="lp-hero-pills lp-anim-4">
-              <span className="lp-pill">66 livros</span>
-              <span className="lp-pill">1.189 capítulos</span>
-              <span className="lp-pill">4 modelos PDF</span>
-              <span className="lp-pill">Protestante + Católica</span>
-            </div>
+        <div className="lp-container lp-hero-center">
+          <p className="lp-eyebrow lp-anim-0">gratuito · sem cadastro · sem anúncios</p>
+          <h1 className="lp-h1 lp-h1-center lp-anim-1">
+            Seu plano de leitura<br />
+            <span className="lp-h1-accent">bíblica, do seu jeito.</span>
+          </h1>
+          <p className="lp-hero-desc lp-hero-desc-center lp-anim-2">
+            Escolha os livros, defina o ritmo e gere um PDF para imprimir.
+            Em minutos, sem cadastro.
+          </p>
+          <div className="lp-hero-btns lp-hero-btns-center lp-anim-3">
+            <button className="lp-btn-hero" onClick={onStart}>
+              Criar meu plano <ArrowRight />
+            </button>
+            <a href="#como-funciona" className="lp-btn-ghost">Ver como funciona</a>
           </div>
-
-          <div className="lp-hero-visual lp-anim-2" aria-hidden="true">
-            <div className="lp-mockup">
-              <div className="lp-mockup-topbar">
-                <div className="lp-mockup-dots">
-                  <span /><span /><span />
-                </div>
-                <span className="lp-mockup-title">Bíblia em 1 Ano</span>
-                <span className="lp-mockup-badge">66 livros</span>
-              </div>
-              <div className="lp-mockup-header">
-                <span>Dia</span>
-                <span>Data</span>
-                <span>Leitura</span>
-                <span>✓</span>
-              </div>
-              {MOCKUP_ROWS.map((r, i) => (
-                <div key={i} className={`lp-mockup-row ${i % 2 === 0 ? "lp-mockup-row-alt" : ""}`}>
-                  <span className="lp-mr-day">{r.day}</span>
-                  <span className="lp-mr-date">{r.date}</span>
-                  <span className="lp-mr-reading">{r.reading}</span>
-                  <span className="lp-mr-check">□</span>
-                </div>
-              ))}
-              <div className="lp-mockup-footer">
-                365 dias &bull; 3 cap/dia &bull; início 01/06/2025
-              </div>
-            </div>
+          <div className="lp-hero-pills lp-hero-pills-center lp-anim-4">
+            <span className="lp-pill">66 livros</span>
+            <span className="lp-pill">1.189 capítulos</span>
+            <span className="lp-pill">4 modelos PDF</span>
+            <span className="lp-pill">Protestante + Católica</span>
           </div>
-
         </div>
       </section>
 

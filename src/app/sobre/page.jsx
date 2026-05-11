@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Sobre o Plano Bíblico",
-  description: "A história por trás do Plano Bíblico — criado por Paulo Henrique Dias, engenheiro de dados apaixonado por computação e teologia.",
+  description: "A história por trás do Plano Bíblico — criado por Paulo Henrique Dias.",
   alternates: { canonical: "https://planobiblia.com.br/sobre" },
   openGraph: {
     title: "Sobre o Plano Bíblico",
-    description: "Criado por um engenheiro de dados apaixonado por teologia. A ferramenta que eu precisava e não existia.",
+    description: "A ferramenta que eu precisava e não existia.",
     url: "https://planobiblia.com.br/sobre",
     type: "website",
   },
@@ -49,22 +49,6 @@ export default function SobrePage() {
 
             <p>
               Então construí para mim mesmo.
-            </p>
-
-            <hr className="sb-rule-sm" />
-
-            <p>
-              Teologia e engenharia têm mais em comum do que parecem. As duas exigem rigor,
-              paciência com sistemas complexos e a humildade de perceber que você está tentando
-              entender algo muito maior do que qualquer framework ou comentário bíblico vai
-              conseguir capturar por completo.
-            </p>
-
-            <p>
-              A Bíblia em particular é um texto extraordinariamente denso — escrita ao longo
-              de milênios, em três línguas, em gêneros completamente diferentes, para contextos
-              que a maioria de nós nem consegue imaginar. Ter um plano claro não é burocracia:
-              é respeito pelo material.
             </p>
 
             <hr className="sb-rule-sm" />
