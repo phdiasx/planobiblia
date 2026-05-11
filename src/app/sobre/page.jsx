@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export const metadata = {
   title: "Sobre o Plano Bíblico",
-  description: "Conheça a história por trás do Plano Bíblico: uma ferramenta gratuita para criar planos de leitura bíblica personalizados com exportação em PDF.",
+  description: "A história por trás do Plano Bíblico — criado por Paulo Henrique Dias, engenheiro de dados apaixonado por computação e teologia.",
   alternates: { canonical: "https://planobiblia.com.br/sobre" },
   openGraph: {
     title: "Sobre o Plano Bíblico",
-    description: "Conheça a história por trás do Plano Bíblico: uma ferramenta gratuita para criar planos de leitura bíblica personalizados com exportação em PDF.",
+    description: "Criado por um engenheiro de dados apaixonado por teologia. A ferramenta que eu precisava e não existia.",
     url: "https://planobiblia.com.br/sobre",
     type: "website",
   },
@@ -14,91 +14,83 @@ export const metadata = {
 
 export default function SobrePage() {
   return (
-    <div className="sobre-page">
-      <header className="sobre-header">
-        <Link href="/" className="sobre-back">
-          ← Voltar
-        </Link>
+    <div className="sb-page">
+      <header className="sb-header">
+        <Link href="/" className="sb-back">← Voltar</Link>
       </header>
 
-      <main className="sobre-main">
-        <div className="sobre-card">
+      <main className="sb-main">
+        <article className="sb-article">
 
-          <div className="sobre-logo">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M2 6c0-1.1.9-2 2-2h7a2 2 0 0 1 2 2v13H4a2 2 0 0 1-2-2V6Z" />
-              <path d="M13 6c0-1.1.9-2 2-2h5a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-7V6Z" />
-              <path d="M13 19v-6" />
-            </svg>
+          <p className="sb-kicker">Engenheiro de dados · Cristão</p>
+
+          <h1 className="sb-h1">
+            A ferramenta que<br />
+            eu precisava<br />
+            não existia.
+          </h1>
+
+          <hr className="sb-rule" />
+
+          <div className="sb-body">
+
+            <p>
+              Me chamo <strong>Paulo Henrique Dias</strong>. Trabalho com engenharia de dados —
+              pipelines, modelagem, sistemas distribuídos. Durante o dia, penso em como
+              estruturar informação. À noite, leio teologia.
+            </p>
+
+            <p>
+              Há alguns anos decidi percorrer a Bíblia de forma sistemática. Queria escolher
+              os livros, definir o ritmo, organizar a leitura do meu jeito — não seguir o
+              cronograma de outra pessoa. Procurei e não encontrei nada que me desse esse
+              controle. Os planos que existiam eram prontos, fechados.
+            </p>
+
+            <p>
+              Então construí para mim mesmo.
+            </p>
+
+            <hr className="sb-rule-sm" />
+
+            <p>
+              Teologia e engenharia têm mais em comum do que parecem. As duas exigem rigor,
+              paciência com sistemas complexos e a humildade de perceber que você está tentando
+              entender algo muito maior do que qualquer framework ou comentário bíblico vai
+              conseguir capturar por completo.
+            </p>
+
+            <p>
+              A Bíblia em particular é um texto extraordinariamente denso — escrita ao longo
+              de milênios, em três línguas, em gêneros completamente diferentes, para contextos
+              que a maioria de nós nem consegue imaginar. Ter um plano claro não é burocracia:
+              é respeito pelo material.
+            </p>
+
+            <hr className="sb-rule-sm" />
+
+            <p>
+              O <strong>Plano Bíblico</strong> é gratuito. Não tem anúncios, não tem cadastro,
+              não coleta dados. Nunca terá. É um projeto pessoal que decidi tornar público
+              porque achei que poderia ser útil para outras pessoas — e, ao que parece, é.
+            </p>
+
           </div>
 
-          <h1 className="sobre-title">Sobre o Plano Bíblico</h1>
-
-          <div className="sobre-body">
+          <blockquote className="sb-verse">
             <p>
-              Este projeto nasceu de uma frustração simples: eu queria ler a Bíblia de forma
-              organizada, no meu ritmo, escolhendo exatamente os livros que queria — e não
-              encontrava nenhuma ferramenta que me desse esse controle.
+              "Toda a Escritura é inspirada por Deus e útil para o ensino,
+              para a repreensão, para a correção e para a educação na justiça."
             </p>
-
-            <p>
-              Os planos que existiam eram prontos, engessados. Ou você seguia o cronograma de
-              outra pessoa, ou ficava sem plano. Para alguém que queria, por exemplo, ler só os
-              livros poéticos em 40 dias ou percorrer os Evangelhos antes da Páscoa, não havia
-              nada disponível que gerasse um PDF organizadinho para imprimir e usar no dia a dia.
-            </p>
-
-            <p>
-              Resolvi então construir a ferramenta que eu mesmo precisava.
-            </p>
-
-            <div className="sobre-divider" />
-
-            <h2>O propósito</h2>
-
-            <p>
-              Mais do que um gerador de PDF, o Plano Bíblico quer ser um incentivo à leitura
-              das Escrituras. Acredito que ter um plano claro, personalizado e bonito na mão
-              faz diferença — tira a sensação de que a Bíblia é grande demais para terminar
-              e transforma em algo tangível, dia a dia.
-            </p>
-
-            <p>
-              O app é completamente gratuito e sempre será. Não há anúncios, não há cadastro,
-              não há coleta de dados. Só você e a Palavra.
-            </p>
-
-            <div className="sobre-divider" />
-
-            <h2>Quem fez</h2>
-
-            <p>
-              Me chamo <strong>Paulo Henrique Dias</strong>. Sou desenvolvedor e cristão — e
-              esse projeto é a interseção das duas coisas que mais gosto de fazer: construir
-              ferramentas úteis e incentivar as pessoas a lerem a Bíblia.
-            </p>
-
-            <p>
-              Se o app te ajudou de alguma forma, considere contribuir com um PIX para manter
-              o projeto no ar. Qualquer valor é bem-vindo e muito apreciado.
-            </p>
-          </div>
-
-          <blockquote className="sobre-versiculo">
-            <p>
-              "Toda a Escritura é inspirada por Deus e útil para o ensino, para a repreensão,
-              para a correção, para a educação na justiça, a fim de que o homem de Deus seja
-              perfeito e perfeitamente habilitado para toda boa obra."
-            </p>
-            <cite>2 Timóteo 3:16-17</cite>
+            <cite>2 Timóteo 3:16</cite>
           </blockquote>
 
-          <Link href="/" className="sobre-cta">
-            Criar meu plano →
-          </Link>
+          <div className="sb-footer-links">
+            <Link href="/" className="sb-cta">Criar meu plano →</Link>
+            <Link href="/faq" className="sb-faq-link">Perguntas frequentes</Link>
+          </div>
 
-        </div>
+        </article>
       </main>
     </div>
   );

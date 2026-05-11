@@ -174,14 +174,15 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
         <div className="lp-container lp-hero-inner">
 
           <div className="lp-hero-text">
-            <p className="lp-eyebrow lp-anim-0">Gratuito · sem cadastro · sem anúncios</p>
+            <p className="lp-eyebrow lp-anim-0">por um engenheiro de dados apaixonado por teologia</p>
             <h1 className="lp-h1 lp-anim-1">
-              Leia a Bíblia<br />
-              <span className="lp-h1-accent">do seu jeito.</span>
+              A ferramenta que<br />
+              <span className="lp-h1-accent">eu precisava<br />não existia.</span>
             </h1>
             <p className="lp-hero-desc lp-anim-2">
-              Monte um plano de leitura personalizado — escolha os livros, defina
-              seu ritmo e gere um PDF bonito para imprimir. Sem planos engessados.
+              Escolha os livros, defina seu ritmo e gere um PDF organizado para
+              imprimir. Sem planos prontos que não se encaixam na sua rotina.
+              Grátis, sem cadastro.
             </p>
             <div className="lp-hero-btns lp-anim-3">
               <button className="lp-btn-primary" onClick={onStart}>
@@ -230,20 +231,24 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
       </section>
 
       {/* ── Steps ── */}
-      <section id="como-funciona" className="lp-section" ref={stepsRef}>
+      <section id="como-funciona" className="lp-section lp-section-alt" ref={stepsRef}>
         <div className={`lp-container ${stepsVisible ? "lp-in" : ""}`}>
-          <div className="lp-section-header lp-child">
-            <p className="lp-section-eye">Como funciona</p>
-            <h2 className="lp-h2">Três passos, plano pronto.</h2>
-          </div>
-          <div className="lp-steps-grid">
-            {STEPS.map((s, i) => (
-              <div key={s.num} className="lp-child lp-step-card" style={{ transitionDelay: `${i * 100}ms` }}>
-                <span className="lp-step-num">{s.num}</span>
-                <h3 className="lp-step-title">{s.title}</h3>
-                <p className="lp-step-desc">{s.desc}</p>
-              </div>
-            ))}
+          <div className="lp-steps-wrap">
+            <div className="lp-steps-label lp-child">
+              <p className="lp-section-eye">Como funciona</p>
+              <h2 className="lp-h2">Simples.<br />Direto.</h2>
+            </div>
+            <div className="lp-steps-list">
+              {STEPS.map((s, i) => (
+                <div key={s.num} className="lp-child lp-step-row" style={{ transitionDelay: `${i * 100}ms` }}>
+                  <span className="lp-step-num">{s.num}</span>
+                  <div className="lp-step-body">
+                    <h3 className="lp-step-title">{s.title}</h3>
+                    <p className="lp-step-desc">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -296,6 +301,23 @@ export default function LandingPage({ onStart, dark, onToggleDark }) {
                 <ArrowRight />
               </button>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Author note ── */}
+      <section className="lp-author-section">
+        <div className="lp-container">
+          <div className="lp-author-card">
+            <p className="lp-author-quote">
+              "Procurei uma ferramenta que me deixasse escolher os livros,
+              definir o ritmo e gerar um PDF. Não encontrei. Então construí."
+            </p>
+            <div className="lp-author-info">
+              <span className="lp-author-name">Paulo Henrique Dias</span>
+              <span className="lp-author-role">Engenheiro de dados · apaixonado por teologia</span>
+            </div>
+            <Link href="/sobre" className="lp-author-link">Ler mais sobre o projeto →</Link>
           </div>
         </div>
       </section>

@@ -6,20 +6,12 @@ import { exportToPDF, PDF_THEMES } from "@/utils/pdfGenerator";
 import { BOOKS } from "@/data/bible";
 
 const PAGE_SIZE = 60;
-const PIX_KEY = "planobiblia0@gmail.com";
 
 export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [page, setPage] = useState(0);
   const [exporting, setExporting] = useState(false);
   const [theme, setTheme] = useState("classico");
-  const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(PIX_KEY);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(shareUrl || window.location.href);
@@ -94,30 +86,6 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
               <span className="pdf-theme-name">{t.label}</span>
             </button>
           ))}
-        </div>
-      </div>
-
-      <div className="pix-card">
-        <div className="pix-header">
-          <svg className="pix-heart" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/>
-          </svg>
-          <div>
-            <p className="pix-title">Gostou do app? Contribua</p>
-            <p className="pix-subtitle">Qualquer valor ajuda a manter o projeto no ar</p>
-          </div>
-        </div>
-        <div className="pix-body">
-          <img src="/qr-code-pix.jpeg" alt="QR Code PIX" className="pix-qr" width="110" height="110" loading="lazy" decoding="async" />
-          <div className="pix-right">
-            <p className="pix-scan-hint">Escaneie o QR Code ou copie a chave abaixo</p>
-            <button className="pix-copy" onClick={handleCopy}>
-              <span className="pix-key">{PIX_KEY}</span>
-              <span className={`pix-action ${copied ? "pix-copied" : ""}`}>
-                {copied ? "✓ Copiado!" : "Copiar chave PIX"}
-              </span>
-            </button>
-          </div>
         </div>
       </div>
 
