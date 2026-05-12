@@ -272,7 +272,7 @@ function drawColHeader(doc, y, c, pal, L) {
   doc.setFontSize(6);
   doc.text("DIA", x + 6, y + 4.7);
   if (L.showDates) doc.text("DATA", x + 19, y + 4.7);
-  doc.text("LEITURA", L.showDates ? x + 34 : x + 22, y + 4.7);
+  doc.text("LEITURA", L.showDates ? x + 38 : x + 22, y + 4.7);
 }
 
 // ─── Divisória entre colunas ─────────────────────────────────
@@ -352,7 +352,7 @@ function drawDayRow(doc, x, y, day, isEven, pal, L) {
     tx(doc, pal.mid);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(6.8);
-    const dt = day.date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+    const dt = day.date.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "2-digit" });
     doc.text(dt, x + 18, vc);
     tx(doc, pal.lit);
     doc.setFontSize(5.5);
@@ -360,8 +360,8 @@ function drawDayRow(doc, x, y, day, isEven, pal, L) {
     doc.text(wd, x + 18, vs);
   }
 
-  const readX = L.showDates ? x + 34 : x + 20;
-  const maxW  = L.cw - (L.showDates ? 35 : 22);
+  const readX = L.showDates ? x + 38 : x + 20;
+  const maxW  = L.cw - (L.showDates ? 39 : 22);
   tx(doc, pal.drk);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(6.8);
@@ -390,6 +390,7 @@ export async function exportToPDF({
   weekDividers  = true,
   showStats     = true,
   showDates     = true,
+  returnBlob    = false,
 }) {
   const { jsPDF } = await import("jspdf");
   const pal  = customPalette ?? (PDF_THEMES[theme] ?? PDF_THEMES.classico);
@@ -478,5 +479,6 @@ export async function exportToPDF({
   }
 
   endPage();
+  if (returnBlob) return URL.createObjectURL(doc.output("blob"));
   doc.save(`${nameSafe.replace(/\s+/g, "-").toLowerCase()}.pdf`);
 }

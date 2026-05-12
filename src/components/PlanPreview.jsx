@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { formatDate, formatReadings } from "@/utils/planGenerator";
 import { exportToPDF, PDF_THEMES, buildCustomPalette } from "@/utils/pdfGenerator";
 import { BOOKS } from "@/data/bible";
@@ -12,6 +12,8 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [exporting, setExporting] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
 
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewing, setPreviewing] = useState(false);
   const [pdfTab, setPdfTab] = useState("estilo");
   const [theme, setTheme] = useState("classico");
   const [columns, setColumns] = useState(2);
@@ -24,6 +26,17 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
   const [customColor2, setCustomColor2] = useState("#C49A1C");
 
   const customPal = buildCustomPalette(customColor1, customColor2);
+
+  useEffect(() => {
+    if (!previewUrl) return;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, [previewUrl]);
+
+  const closePreview = () => {
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(null);
+  };
 
   const themeEntries = [
     ...Object.entries(PDF_THEMES),
@@ -47,24 +60,38 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
     return s + (sel ? sel.length : book.chapters);
   }, 0);
 
+  const pdfParams = () => {
+    const customPalette = theme === "personalizado" ? customPal : null;
+    return {
+      planName: config.planName || "Plano de Leitura Bíblica",
+      days,
+      chaptersPerDay: config.chaptersPerDay,
+      totalChapters,
+      theme: theme === "personalizado" ? "classico" : theme,
+      customPalette,
+      columns,
+      rowSpacing,
+      checkStyle,
+      weekDividers,
+      showStats,
+      showDates,
+    };
+  };
+
+  const handlePreview = async () => {
+    setPreviewing(true);
+    try {
+      const url = await exportToPDF({ ...pdfParams(), returnBlob: true });
+      setPreviewUrl(url);
+    } finally {
+      setPreviewing(false);
+    }
+  };
+
   const handleExport = async () => {
     setExporting(true);
     try {
-      const customPalette = theme === "personalizado" ? customPal : null;
-      await exportToPDF({
-        planName: config.planName || "Plano de Leitura Bíblica",
-        days,
-        chaptersPerDay: config.chaptersPerDay,
-        totalChapters,
-        theme: theme === "personalizado" ? "classico" : theme,
-        customPalette,
-        columns,
-        rowSpacing,
-        checkStyle,
-        weekDividers,
-        showStats,
-        showDates,
-      });
+      await exportToPDF(pdfParams());
       if (typeof window !== "undefined" && window.gtag) {
         window.gtag("event", "download_pdf", {
           plan_name: config.planName || "Plano de Leitura Bíblica",
@@ -90,7 +117,10 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
           <button className="btn-outline share-btn" onClick={handleCopyLink}>
             {linkCopied ? "✓ Link copiado!" : "🔗 Compartilhar"}
           </button>
-          <button className="btn-primary export-btn" onClick={handleExport} disabled={exporting}>
+          <button className="btn-outline preview-btn" onClick={handlePreview} disabled={previewing || exporting}>
+            {previewing ? "Carregando..." : "Visualizar"}
+          </button>
+          <button className="btn-primary export-btn" onClick={handleExport} disabled={exporting || previewing}>
             {exporting ? "Gerando PDF..." : "Baixar PDF"}
           </button>
         </div>
@@ -234,6 +264,28 @@ export default function PlanPreview({ days, config, selectedIds, shareUrl }) {
           <span>Página {page + 1} de {totalPages}</span>
           <button onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}>›</button>
           <button onClick={() => setPage(totalPages - 1)} disabled={page === totalPages - 1}>»</button>
+        </div>
+      )}
+
+      {previewUrl && (
+        <div className="pdf-modal-backdrop" onClick={closePreview}>
+          <div className="pdf-modal" onClick={e => e.stopPropagation()}>
+            <div className="pdf-modal-header">
+              <span className="pdf-modal-title">Prévia do PDF</span>
+              <button className="pdf-modal-close" onClick={closePreview}>✕</button>
+            </div>
+            <iframe
+              src={previewUrl}
+              className="pdf-modal-frame"
+              title="Prévia do PDF"
+            />
+            <div className="pdf-modal-footer">
+              <button className="btn-outline" onClick={closePreview}>Fechar</button>
+              <button className="btn-primary" onClick={handleExport} disabled={exporting}>
+                {exporting ? "Gerando..." : "Baixar PDF"}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
